@@ -27,6 +27,7 @@ interface ComparisonData {
 export default function PerbandinganPage() {
   const [data, setData] = useState<ComparisonData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
 
   const fetchData = async () => {
     try {
@@ -43,6 +44,16 @@ export default function PerbandinganPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    await fetchData()
+    setRefreshing(false)
+    toast({
+      title: 'Berhasil',
+      description: 'Data perbandingan berhasil diperbarui',
+    })
   }
 
   useEffect(() => {
@@ -74,9 +85,14 @@ export default function PerbandinganPage() {
             <h1 className="text-3xl font-bold text-[#1E3A5F]">Perbandingan Metode</h1>
             <p className="text-gray-600 mt-1">Analisis komprehensif keempat metode SPK</p>
           </div>
-          <Button onClick={fetchData} variant="outline">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
+          <Button
+            onClick={handleRefresh}
+            variant="outline"
+            disabled={refreshing}
+            className="gap-2"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? 'Memuat...' : 'Refresh'}
           </Button>
         </div>
 
