@@ -32,16 +32,11 @@ async function main() {
 
   // Seed Smartphone
   const smartphoneData = [
-    { kode: 'A1', nama: 'Samsung Galaxy A15', harga: 2199000, ram: 4, storage: 128, baterai: 5000, kamera: 50 },
-    { kode: 'A2', nama: 'Xiaomi Redmi 13C', harga: 1699000, ram: 4, storage: 128, baterai: 5000, kamera: 50 },
-    { kode: 'A3', nama: 'Realme C67', harga: 2499000, ram: 8, storage: 256, baterai: 5000, kamera: 108 },
-    { kode: 'A4', nama: 'Infinix Hot 40', harga: 1899000, ram: 8, storage: 256, baterai: 5000, kamera: 50 },
-    { kode: 'A5', nama: 'Samsung Galaxy A35', harga: 4999000, ram: 8, storage: 256, baterai: 5000, kamera: 50 },
-    { kode: 'A6', nama: 'Xiaomi Redmi Note 13', harga: 2999000, ram: 8, storage: 256, baterai: 5000, kamera: 108 },
-    { kode: 'A7', nama: 'Oppo A38', harga: 2199000, ram: 4, storage: 128, baterai: 5000, kamera: 50 },
-    { kode: 'A8', nama: 'Vivo Y28', harga: 2499000, ram: 8, storage: 128, baterai: 6000, kamera: 50 },
-    { kode: 'A9', nama: 'Samsung Galaxy J2 Prime', harga: 899000, ram: 1.5, storage: 8, baterai: 2600, kamera: 8 },
-    { kode: 'A10', nama: 'Vivo Y93', harga: 1499000, ram: 3, storage: 32, baterai: 4030, kamera: 13 },
+    { kode: 'A1', nama: 'Samsung Galaxy A15', harga: 2800000, ram: 8, storage: 128, baterai: 5000, kamera: 50 },
+    { kode: 'A2', nama: 'Xiaomi Redmi Note 13', harga: 3000000, ram: 8, storage: 256, baterai: 5000, kamera: 108 },
+    { kode: 'A3', nama: 'Infinix Note 40', harga: 2700000, ram: 8, storage: 256, baterai: 5000, kamera: 108 },
+    { kode: 'A4', nama: 'Realme Narzo 60x', harga: 2500000, ram: 6, storage: 128, baterai: 5000, kamera: 50 },
+    { kode: 'A5', nama: 'Vivo Y28', harga: 3200000, ram: 8, storage: 128, baterai: 6000, kamera: 50 },
   ]
 
   for (const s of smartphoneData) {
@@ -52,11 +47,11 @@ async function main() {
   // Seed Profil Ideal untuk Profile Matching
   await prisma.profilIdeal.create({
     data: {
-      harga: 2500000,
-      ram: 6,
-      storage: 128,
-      baterai: 5000,
-      kamera: 50,
+      harga: 2800000,
+      ram: 8,
+      storage: 256,
+      baterai: 5500,
+      kamera: 80,
     },
   })
   console.log('✅ Created profil ideal')
