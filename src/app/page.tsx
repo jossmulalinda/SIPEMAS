@@ -1,12 +1,9 @@
 'use client'
 
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
-  FunctionSquare,
-  BrainCircuit,
-  Target,
-  Trophy,
   ArrowRight,
   CheckCircle2,
   Zap,
@@ -21,8 +18,13 @@ export default function DashboardPage() {
   const features = [
     {
       icon: (
-        <div className="w-10 h-10 bg-[#4F9CF9] rounded-lg flex items-center justify-center text-white font-bold text-lg">
-          SI
+        <div className="w-16 h-16 relative">
+          <Image
+            src="/logo.png"
+            alt="SIPEMAS"
+            fill
+            className="object-contain"
+          />
         </div>
       ),
       title: 'Metode SAW',
@@ -31,8 +33,13 @@ export default function DashboardPage() {
     },
     {
       icon: (
-        <div className="w-10 h-10 bg-[#1E3A5F] rounded-lg flex items-center justify-center text-white font-bold text-lg">
-          SI
+        <div className="w-16 h-16 relative">
+          <Image
+            src="/logo.png"
+            alt="SIPEMAS"
+            fill
+            className="object-contain"
+          />
         </div>
       ),
       title: 'Metode SMART',
@@ -41,8 +48,13 @@ export default function DashboardPage() {
     },
     {
       icon: (
-        <div className="w-10 h-10 bg-[#28A745] rounded-lg flex items-center justify-center text-white font-bold text-lg">
-          SI
+        <div className="w-16 h-16 relative">
+          <Image
+            src="/logo.png"
+            alt="SIPEMAS"
+            fill
+            className="object-contain"
+          />
         </div>
       ),
       title: 'Profile Matching',
@@ -51,8 +63,13 @@ export default function DashboardPage() {
     },
     {
       icon: (
-        <div className="w-10 h-10 bg-[#FFC107] rounded-lg flex items-center justify-center text-white font-bold text-lg">
-          SI
+        <div className="w-16 h-16 relative">
+          <Image
+            src="/logo.png"
+            alt="SIPEMAS"
+            fill
+            className="object-contain"
+          />
         </div>
       ),
       title: 'Goal Programming',
@@ -130,9 +147,9 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 group">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8">
                     Mulai Sekarang
-                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
                 <Link href="/perbandingan">
@@ -146,8 +163,13 @@ export default function DashboardPage() {
               <div className="relative">
                 <div className="absolute inset-0 bg-[#4F9CF9] rounded-3xl blur-3xl opacity-30"></div>
                 <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-                  <div className="w-48 h-48 bg-[#4F9CF9] rounded-3xl mx-auto flex items-center justify-center">
-                    <span className="text-5xl font-bold text-white">SI</span>
+                  <div className="w-48 h-48 relative mx-auto">
+                    <Image
+                      src="/logo.png"
+                      alt="SIPEMAS"
+                      fill
+                      className="object-contain"
+                    />
                   </div>
                   <div className="mt-6 text-center">
                     <p className="text-2xl font-bold">4 Metode</p>
