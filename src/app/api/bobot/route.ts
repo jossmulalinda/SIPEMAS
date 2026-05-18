@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { sortByCode } from '@/lib/sort'
 
 export async function GET() {
   try {
-    const kriteria = await db.kriteria.findMany({
-      orderBy: { kode: 'asc' },
-    })
-    return NextResponse.json(kriteria)
+    const kriteria = await db.kriteria.findMany()
+    // Sort using natural sort algorithm (C1, C2, ..., C9, C10, C11)
+    const sortedKriteria = sortByCode(kriteria)
+    return NextResponse.json(sortedKriteria)
   } catch (error) {
     console.error('Error fetching bobot:', error)
     return NextResponse.json({ error: 'Failed to fetch bobot' }, { status: 500 })
@@ -39,11 +40,11 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const updatedKriteria = await db.kriteria.findMany({
-      orderBy: { kode: 'asc' },
-    })
+    const updatedKriteria = await db.kriteria.findMany()
+    // Sort using natural sort algorithm (C1, C2, ..., C9, C10, C11)
+    const sortedUpdatedKriteria = sortByCode(updatedKriteria)
 
-    return NextResponse.json(updatedKriteria)
+    return NextResponse.json(sortedUpdatedKriteria)
   } catch (error) {
     console.error('Error updating bobot:', error)
     return NextResponse.json({ error: 'Failed to update bobot' }, { status: 500 })

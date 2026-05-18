@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { sortByCode } from '@/lib/sort'
 
 export async function GET() {
   try {
-    const smartphones = await db.smartphone.findMany({
-      orderBy: { kode: 'asc' },
-    })
-    return NextResponse.json(smartphones)
+    const smartphones = await db.smartphone.findMany()
+    // Sort using natural sort algorithm (A1, A2, ..., A9, A10, A11)
+    const sortedSmartphones = sortByCode(smartphones)
+    return NextResponse.json(sortedSmartphones)
   } catch (error) {
     console.error('Error fetching smartphones:', error)
     return NextResponse.json({ error: 'Failed to fetch smartphones' }, { status: 500 })
