@@ -1,14 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Plus, Pencil, Trash2, RefreshCw } from 'lucide-react'
+import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
+import * as XLSX from 'xlsx'
 
 interface Smartphone {
   id: number
@@ -25,7 +26,10 @@ export default function AlternatifPage() {
   const [smartphones, setSmartphones] = useState<Smartphone[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [importDialogOpen, setImportDialogOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<Smartphone | null>(null)
+  const [importing, setImporting] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState({
     kode: '',
     nama: '',
@@ -220,6 +224,211 @@ export default function AlternatifPage() {
     }
   }
 
+  // Export to Excel
+  const handleExport = () => {
+    try {
+      // Prepare data for export (without id field)
+      const exportData = smartphones.map((item) => ({
+        Kode: item.kode,
+        Nama: item.nama,
+        Harga: item.harga,
+        RAM: item.ram,
+        Storage: item.storage,
+        Baterai: item.baterai,
+        Kamera: item.kamera,
+      }))
+
+      // Create worksheet
+      const ws = XLSX.utils.json_to_sheet(exportData)
+
+      // Set column widths
+      ws['!cols'] = [
+        { wch: 8 },  // Kode
+        { wch: 30 }, // Nama
+        { wch: 15 }, // Harga
+        { wch: 10 }, // RAM
+        { wch: 10 }, // Storage
+        { wch: 12 }, // Baterai
+        { wch: 10 }, // Kamera
+      ]
+
+      // Create workbook
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Smartphones')
+
+      // Generate file name with timestamp
+      const timestamp = new Date().toISOString().slice(0, 10)
+      const fileName = `Smartphones_SIPEMAS_${timestamp}.xlsx`
+
+      // Download file
+      XLSX.writeFile(wb, fileName)
+
+      toast({
+        title: 'Berhasil',
+        description: 'Data smartphone berhasil diekspor ke Excel',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Gagal mengekspor data ke Excel',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  // Import from Excel
+  const handleImportClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    const validTypes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+    ]
+    if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls)$/i)) {
+      toast({
+        title: 'Error',
+        description: 'File harus berupa Excel (.xlsx atau .xls)',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    setImporting(true)
+
+    try {
+      const data = await file.arrayBuffer()
+      const workbook = XLSX.read(data, { type: 'array' })
+
+      // Get first sheet
+      const sheetName = workbook.SheetNames[0]
+      const sheet = workbook.Sheets[sheetName]
+
+      // Parse sheet to JSON
+      const jsonData = XLSX.utils.sheet_to_json<any>(sheet)
+
+      if (jsonData.length === 0) {
+        toast({
+          title: 'Error',
+          description: 'File Excel tidak berisi data',
+          variant: 'destructive',
+        })
+        setImporting(false)
+        return
+      }
+
+      // Validate and transform data
+      const validSmartphones: any[] = []
+      const errors: string[] = []
+
+      for (let i = 0; i < jsonData.length; i++) {
+        const row = jsonData[i]
+        const rowNum = i + 2 // Excel row number (1-indexed + header)
+
+        // Map column names (try both English and Indonesian)
+        const nama = row['Nama'] || row['nama'] || row['Nama Smartphone'] || row['name']
+        const harga = parseFloat(row['Harga'] || row['harga'] || row['Price'] || row['price'] || 0)
+        const ram = parseFloat(row['RAM'] || row['ram'] || row['Ram'] || 0)
+        const storage = parseFloat(row['Storage'] || row['storage'] || row['Penyimpanan'] || 0)
+        const baterai = parseFloat(row['Baterai'] || row['baterai'] || row['Battery'] || 0)
+        const kamera = parseFloat(row['Kamera'] || row['kamera'] || row['Camera'] || 0)
+
+        // Validate required fields
+        if (!nama || typeof nama !== 'string') {
+          errors.push(`Baris ${rowNum}: Nama smartphone harus diisi`)
+          continue
+        }
+
+        if (isNaN(harga) || harga <= 0) {
+          errors.push(`Baris ${rowNum}: Harga harus berupa angka positif (${nama})`)
+          continue
+        }
+
+        if (isNaN(ram) || ram <= 0) {
+          errors.push(`Baris ${rowNum}: RAM harus berupa angka positif (${nama})`)
+          continue
+        }
+
+        if (isNaN(storage) || storage <= 0) {
+          errors.push(`Baris ${rowNum}: Storage harus berupa angka positif (${nama})`)
+          continue
+        }
+
+        if (isNaN(baterai) || baterai <= 0) {
+          errors.push(`Baris ${rowNum}: Baterai harus berupa angka positif (${nama})`)
+          continue
+        }
+
+        if (isNaN(kamera) || kamera <= 0) {
+          errors.push(`Baris ${rowNum}: Kamera harus berupa angka positif (${nama})`)
+          continue
+        }
+
+        validSmartphones.push({
+          nama,
+          harga,
+          ram,
+          storage,
+          baterai,
+          kamera,
+        })
+      }
+
+      // Show errors if any
+      if (errors.length > 0) {
+        toast({
+          title: 'Validasi Gagal',
+          description: `${errors.length} baris tidak valid. ${errors.slice(0, 3).join('. ')}`,
+          variant: 'destructive',
+        })
+      }
+
+      if (validSmartphones.length === 0) {
+        setImporting(false)
+        return
+      }
+
+      // Send to API
+      const response = await fetch('/api/smartphone/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ smartphones: validSmartphones }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Gagal mengimpor data')
+      }
+
+      const result = await response.json()
+
+      toast({
+        title: 'Berhasil',
+        description: `${result.imported} smartphone berhasil ditambahkan${result.skipped > 0 ? `, ${result.skipped} duplikat dilewati` : ''}`,
+      })
+
+      setImportDialogOpen(false)
+      fetchSmartphones()
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Gagal mengimpor data dari Excel',
+        variant: 'destructive',
+      })
+    } finally {
+      setImporting(false)
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -236,112 +445,122 @@ export default function AlternatifPage() {
             <h1 className="text-3xl font-bold text-[#1E3A5F]">Alternatif Smartphone</h1>
             <p className="text-gray-600 mt-1">Kelola data smartphone yang akan dinilai</p>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
-            <DialogTrigger asChild>
-              <Button onClick={resetForm} className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
-                <Plus className="w-4 h-4 mr-2" />
-                Tambah Smartphone
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>{editingItem ? 'Edit Smartphone' : 'Tambah Smartphone Baru'}</DialogTitle>
-                <DialogDescription>
-                  {editingItem ? 'Edit data smartphone yang ada' : 'Tambahkan smartphone baru ke dalam sistem'}
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  {editingItem && (
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleExport} className="gap-2">
+              <Download className="w-4 h-4" />
+              Export Excel
+            </Button>
+            <Button variant="outline" onClick={() => setImportDialogOpen(true)} className="gap-2">
+              <Upload className="w-4 h-4" />
+              Import Excel
+            </Button>
+            <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
+              <DialogTrigger asChild>
+                <Button onClick={resetForm} className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Tambah Smartphone
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>{editingItem ? 'Edit Smartphone' : 'Tambah Smartphone Baru'}</DialogTitle>
+                  <DialogDescription>
+                    {editingItem ? 'Edit data smartphone yang ada' : 'Tambahkan smartphone baru ke dalam sistem'}
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    {editingItem && (
+                      <div className="space-y-2">
+                        <Label htmlFor="kode">Kode</Label>
+                        <Input
+                          id="kode"
+                          value={formData.kode}
+                          disabled
+                          className="bg-gray-100"
+                        />
+                        <p className="text-xs text-gray-500">Kode otomatis diatur oleh sistem</p>
+                      </div>
+                    )}
                     <div className="space-y-2">
-                      <Label htmlFor="kode">Kode</Label>
+                      <Label htmlFor="nama">Nama Smartphone</Label>
                       <Input
-                        id="kode"
-                        value={formData.kode}
-                        disabled
-                        className="bg-gray-100"
+                        id="nama"
+                        value={formData.nama}
+                        onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+                        placeholder="Contoh: Samsung Galaxy S24"
+                        required
                       />
-                      <p className="text-xs text-gray-500">Kode otomatis diatur oleh sistem</p>
                     </div>
-                  )}
-                  <div className="space-y-2">
-                    <Label htmlFor="nama">Nama Smartphone</Label>
-                    <Input
-                      id="nama"
-                      value={formData.nama}
-                      onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                      placeholder="Contoh: Samsung Galaxy S24"
-                      required
-                    />
+                    <div className="space-y-2">
+                      <Label htmlFor="harga">Harga (Rp)</Label>
+                      <Input
+                        id="harga"
+                        type="number"
+                        value={formData.harga}
+                        onChange={(e) => setFormData({ ...formData, harga: e.target.value })}
+                        placeholder="Contoh: 5000000"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ram">RAM (GB)</Label>
+                      <Input
+                        id="ram"
+                        type="number"
+                        step="0.5"
+                        value={formData.ram}
+                        onChange={(e) => setFormData({ ...formData, ram: e.target.value })}
+                        placeholder="Contoh: 8"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="storage">Storage (GB)</Label>
+                      <Input
+                        id="storage"
+                        type="number"
+                        value={formData.storage}
+                        onChange={(e) => setFormData({ ...formData, storage: e.target.value })}
+                        placeholder="Contoh: 128"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="baterai">Baterai (mAh)</Label>
+                      <Input
+                        id="baterai"
+                        type="number"
+                        value={formData.baterai}
+                        onChange={(e) => setFormData({ ...formData, baterai: e.target.value })}
+                        placeholder="Contoh: 5000"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="kamera">Kamera (MP)</Label>
+                      <Input
+                        id="kamera"
+                        type="number"
+                        value={formData.kamera}
+                        onChange={(e) => setFormData({ ...formData, kamera: e.target.value })}
+                        placeholder="Contoh: 50"
+                        required
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="harga">Harga (Rp)</Label>
-                    <Input
-                      id="harga"
-                      type="number"
-                      value={formData.harga}
-                      onChange={(e) => setFormData({ ...formData, harga: e.target.value })}
-                      placeholder="Contoh: 5000000"
-                      required
-                    />
+                  <div className="flex justify-end gap-2 pt-4">
+                    <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                      Batal
+                    </Button>
+                    <Button type="submit" className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
+                      {editingItem ? 'Update' : 'Simpan'}
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="ram">RAM (GB)</Label>
-                    <Input
-                      id="ram"
-                      type="number"
-                      step="0.5"
-                      value={formData.ram}
-                      onChange={(e) => setFormData({ ...formData, ram: e.target.value })}
-                      placeholder="Contoh: 8"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="storage">Storage (GB)</Label>
-                    <Input
-                      id="storage"
-                      type="number"
-                      value={formData.storage}
-                      onChange={(e) => setFormData({ ...formData, storage: e.target.value })}
-                      placeholder="Contoh: 128"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="baterai">Baterai (mAh)</Label>
-                    <Input
-                      id="baterai"
-                      type="number"
-                      value={formData.baterai}
-                      onChange={(e) => setFormData({ ...formData, baterai: e.target.value })}
-                      placeholder="Contoh: 5000"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="kamera">Kamera (MP)</Label>
-                    <Input
-                      id="kamera"
-                      type="number"
-                      value={formData.kamera}
-                      onChange={(e) => setFormData({ ...formData, kamera: e.target.value })}
-                      placeholder="Contoh: 50"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                    Batal
-                  </Button>
-                  <Button type="submit" className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
-                    {editingItem ? 'Update' : 'Simpan'}
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <Card>
@@ -396,6 +615,67 @@ export default function AlternatifPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Import Dialog */}
+        <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Import Data Smartphone</DialogTitle>
+              <DialogDescription>
+                Upload file Excel (.xlsx atau .xls) untuk menambahkan data smartphone
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                <FileSpreadsheet className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                <p className="text-sm text-gray-600 mb-2">
+                  Format kolom yang diharapkan:
+                </p>
+                <p className="text-xs text-gray-500 mb-4">
+                  Nama, Harga, RAM, Storage, Baterai, Kamera
+                </p>
+                <Button
+                  onClick={handleImportClick}
+                  disabled={importing}
+                  className="w-full"
+                >
+                  {importing ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Memproses...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4 mr-2" />
+                      Pilih File Excel
+                    </>
+                  )}
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </div>
+              <div className="text-xs text-gray-500 space-y-1">
+                <p className="font-semibold">Catatan:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Sistem akan mendeteksi nama kolom secara otomatis</li>
+                  <li>Duplikat berdasarkan nama akan dilewati</li>
+                  <li>Kode akan di-generate otomatis oleh sistem</li>
+                  <li>Harga dalam format angka (tanpa titik atau koma)</li>
+                </ul>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button variant="outline" onClick={() => setImportDialogOpen(false)}>
+                Tutup
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
