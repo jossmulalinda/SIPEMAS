@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
+import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X, CheckCircle2, XCircle, AlertTriangle, Timer } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import * as XLSX from 'xlsx'
 
@@ -27,9 +27,14 @@ export default function AlternatifPage() {
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [importDialogOpen, setImportDialogOpen] = useState(false)
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<Smartphone | null>(null)
   const [importing, setImporting] = useState(false)
+  const [deleteItem, setDeleteItem] = useState<Smartphone | null>(null)
+  const [deleteAllMode, setDeleteAllMode] = useState(false)
+  const [countdown, setCountdown] = useState(30)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const [formData, setFormData] = useState({
     kode: '',
     nama: '',
@@ -61,6 +66,46 @@ export default function AlternatifPage() {
   useEffect(() => {
     fetchSmartphones()
   }, [])
+
+  // Handle countdown for delete confirmation
+  useEffect(() => {
+    if (deleteConfirmDialogOpen) {
+      setCountdown(30)
+      countdownIntervalRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            // Time's up, close dialog and don't delete
+            if (countdownIntervalRef.current) {
+              clearInterval(countdownIntervalRef.current)
+              countdownIntervalRef.current = null
+            }
+            setDeleteConfirmDialogOpen(false)
+            toast({
+              title: 'Waktu Habis',
+              description: 'Konfirmasi dibatalkan karena waktu habis',
+              variant: 'destructive',
+              icon: <XCircle className="h-5 w-5" />,
+            })
+            return 30
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } else {
+      // Cleanup interval when dialog closes
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current)
+        countdownIntervalRef.current = null
+      }
+    }
+
+    return () => {
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current)
+        countdownIntervalRef.current = null
+      }
+    }
+  }, [deleteConfirmDialogOpen])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -190,54 +235,69 @@ export default function AlternatifPage() {
     setDialogOpen(true)
   }
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus smartphone ini?')) return
+  const handleDelete = (item: Smartphone) => {
+    setDeleteItem(item)
+    setDeleteAllMode(false)
+    setDeleteConfirmDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    // Stop countdown
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current)
+      countdownIntervalRef.current = null
+    }
 
     try {
-      const response = await fetch(`/api/smartphone/${id}`, { method: 'DELETE' })
-      if (!response.ok) throw new Error('Failed to delete')
+      if (deleteAllMode) {
+        const response = await fetch('/api/smartphone', { method: 'DELETE' })
+        if (!response.ok) throw new Error('Failed to delete all')
 
-      toast({
-        title: 'Sukses',
-        description: 'Smartphone berhasil dihapus',
-        className: 'bg-green-500 text-white border-green-500',
-        icon: <CheckCircle2 className="h-5 w-5" />,
-      })
+        toast({
+          title: 'Sukses',
+          description: 'Semua data smartphone berhasil dihapus',
+          className: 'bg-green-500 text-white border-green-500',
+          icon: <CheckCircle2 className="h-5 w-5" />,
+        })
+      } else if (deleteItem) {
+        const response = await fetch(`/api/smartphone/${deleteItem.id}`, { method: 'DELETE' })
+        if (!response.ok) throw new Error('Failed to delete')
 
+        toast({
+          title: 'Sukses',
+          description: 'Smartphone berhasil dihapus',
+          className: 'bg-green-500 text-white border-green-500',
+          icon: <CheckCircle2 className="h-5 w-5" />,
+        })
+      }
+
+      setDeleteConfirmDialogOpen(false)
+      setDeleteItem(null)
       fetchSmartphones()
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Gagal menghapus smartphone',
+        description: deleteAllMode ? 'Gagal menghapus semua data smartphone' : 'Gagal menghapus smartphone',
         variant: 'destructive',
         icon: <XCircle className="h-5 w-5" />,
       })
     }
   }
 
-  const handleDeleteAll = async () => {
-    if (!confirm('Apakah Anda yakin ingin menghapus SEMUA data smartphone? Tindakan ini tidak dapat dibatalkan!')) return
+  const handleDeleteAll = () => {
+    setDeleteAllMode(true)
+    setDeleteItem(null)
+    setDeleteConfirmDialogOpen(true)
+  }
 
-    try {
-      const response = await fetch('/api/smartphone', { method: 'DELETE' })
-      if (!response.ok) throw new Error('Failed to delete all')
-
-      toast({
-        title: 'Sukses',
-        description: 'Semua data smartphone berhasil dihapus',
-        className: 'bg-green-500 text-white border-green-500',
-        icon: <CheckCircle2 className="h-5 w-5" />,
-      })
-
-      fetchSmartphones()
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Gagal menghapus semua data smartphone',
-        variant: 'destructive',
-        icon: <XCircle className="h-5 w-5" />,
-      })
+  const cancelDelete = () => {
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current)
+      countdownIntervalRef.current = null
     }
+    setDeleteConfirmDialogOpen(false)
+    setDeleteItem(null)
+    setDeleteAllMode(false)
   }
 
   const resetForm = () => {
@@ -662,7 +722,7 @@ export default function AlternatifPage() {
                             size="sm"
                             variant="outline"
                             className="text-red-600 hover:text-red-700"
-                            onClick={() => handleDelete(item.id)}
+                            onClick={() => handleDelete(item)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -675,6 +735,69 @@ export default function AlternatifPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteConfirmDialogOpen} onOpenChange={(open) => !open && cancelDelete()}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <AlertTriangle className="w-6 h-6 text-red-600" />
+                </div>
+                <DialogTitle>Konfirmasi Penghapusan</DialogTitle>
+              </div>
+              <DialogDescription className="pt-4">
+                {deleteAllMode ? (
+                  <>
+                    <p className="text-base font-semibold text-gray-900 mb-2">
+                      Apakah Anda yakin ingin menghapus <span className="text-red-600">SEMUA</span> data smartphone?
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Tindakan ini tidak dapat dibatalkan. {smartphones.length} smartphone akan dihapus secara permanen.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-base font-semibold text-gray-900 mb-2">
+                      Apakah Anda yakin ingin menghapus smartphone ini?
+                    </p>
+                    <div className="bg-gray-100 rounded-lg p-3 mt-2">
+                      <p className="font-medium text-gray-900">{deleteItem?.kode} - {deleteItem?.nama}</p>
+                      <p className="text-sm text-gray-600">
+                        Rp {deleteItem?.harga.toLocaleString('id-ID')} | {deleteItem?.ram}GB RAM | {deleteItem?.storage}GB Storage
+                      </p>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Tindakan ini tidak dapat dibatalkan.
+                    </p>
+                  </>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="flex items-center justify-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <Timer className="w-6 h-6 text-amber-600" />
+                <div className="text-center">
+                  <p className="text-sm text-amber-800">Konfirmasi akan otomatis dibatalkan dalam</p>
+                  <p className="text-3xl font-bold text-amber-600">{countdown} detik</p>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <Button variant="outline" onClick={cancelDelete}>
+                  Batal
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={confirmDelete}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  {deleteAllMode ? 'Hapus Semua' : 'Hapus'}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Import Dialog */}
         <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
