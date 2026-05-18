@@ -9,13 +9,20 @@ export async function POST(request: NextRequest) {
 
     // Get data
     const smartphones = await db.smartphone.findMany()
+    const profilIdeal = await db.profilIdeal.findFirst()
 
     if (smartphones.length === 0) {
       return NextResponse.json({ error: 'No smartphones data available' }, { status: 400 })
     }
 
-    // Target values
-    const target = {
+    // Target values from database or defaults
+    const target = profilIdeal ? {
+      harga: profilIdeal.harga,
+      ram: profilIdeal.ram,
+      storage: profilIdeal.storage,
+      baterai: profilIdeal.baterai,
+      kamera: profilIdeal.kamera,
+    } : {
       harga: 2500000,
       ram: 6,
       storage: 128,
