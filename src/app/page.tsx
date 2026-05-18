@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
-  Smartphone,
   FunctionSquare,
   BrainCircuit,
   Target,
@@ -21,27 +20,43 @@ import Link from 'next/link'
 export default function DashboardPage() {
   const features = [
     {
-      icon: <FunctionSquare className="w-8 h-8 text-[#4F9CF9]" />,
+      icon: (
+        <div className="w-10 h-10 bg-[#4F9CF9] rounded-lg flex items-center justify-center text-white font-bold text-lg">
+          SI
+        </div>
+      ),
       title: 'Metode SAW',
       description: 'Simple Additive Weighting - Metode pembobotan sederhana dengan normalisasi data',
       color: 'bg-[#4F9CF9]/10'
     },
     {
-      icon: <BrainCircuit className="w-8 h-8 text-[#1E3A5F]" />,
+      icon: (
+        <div className="w-10 h-10 bg-[#1E3A5F] rounded-lg flex items-center justify-center text-white font-bold text-lg">
+          SI
+        </div>
+      ),
       title: 'Metode SMART',
       description: 'Simple Multi-Attribute Rating Technique - Penilaian multi-atribut dengan fungsi utility',
       color: 'bg-[#1E3A5F]/10'
     },
     {
-      icon: <Target className="w-8 h-8 text-[#28A745]" />,
+      icon: (
+        <div className="w-10 h-10 bg-[#28A745] rounded-lg flex items-center justify-center text-white font-bold text-lg">
+          SI
+        </div>
+      ),
       title: 'Profile Matching',
       description: 'Metode pencocokan profil dengan analisis GAP faktor core dan secondary',
       color: 'bg-[#28A745]/10'
     },
     {
-      icon: <Trophy className="w-8 h-8 text-[#FFC107]" />,
+      icon: (
+        <div className="w-10 h-10 bg-[#FFC107] rounded-lg flex items-center justify-center text-white font-bold text-lg">
+          SI
+        </div>
+      ),
       title: 'Goal Programming',
-      description: 'Metode pemrograman tujuan untuk meminimalkasi deviasi dari target',
+      description: 'Metode pemrograman tujuan untuk meminimalkan deviasi dari target',
       color: 'bg-[#FFC107]/10'
     }
   ]
@@ -115,13 +130,13 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] hover:bg-blue-50 font-semibold px-8">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 group">
                     Mulai Sekarang
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
                 <Link href="/perbandingan">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8">
+                  <Button size="lg" variant="outline" className="border-white text-white px-8">
                     Lihat Perbandingan
                   </Button>
                 </Link>
@@ -131,7 +146,9 @@ export default function DashboardPage() {
               <div className="relative">
                 <div className="absolute inset-0 bg-[#4F9CF9] rounded-3xl blur-3xl opacity-30"></div>
                 <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-                  <Smartphone className="w-48 h-48 text-white mx-auto" />
+                  <div className="w-48 h-48 bg-[#4F9CF9] rounded-3xl mx-auto flex items-center justify-center">
+                    <span className="text-5xl font-bold text-white">SI</span>
+                  </div>
                   <div className="mt-6 text-center">
                     <p className="text-2xl font-bold">4 Metode</p>
                     <p className="text-blue-100">Tersedia untuk Analisis</p>
@@ -158,7 +175,7 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
-              <Card key={index} className={`border-t-4 ${feature.color} hover:shadow-lg transition-shadow`}>
+              <Card key={index} className={`border-t-4 ${feature.color}`}>
                 <CardHeader>
                   <div className={`w-16 h-16 ${feature.color} rounded-2xl flex items-center justify-center mb-4`}>
                     {feature.icon}
@@ -282,13 +299,12 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] hover:bg-blue-50 font-semibold px-8">
-                    <Smartphone className="w-5 h-5 mr-2" />
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8">
                     Kelola Alternatif
                   </Button>
                 </Link>
                 <Link href="/kriteria">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8">
+                  <Button size="lg" variant="outline" className="border-white text-white px-8">
                     Atur Kriteria
                   </Button>
                 </Link>
