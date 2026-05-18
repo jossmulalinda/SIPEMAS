@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Calculator, RefreshCw, Trophy, Smartphone, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
@@ -127,8 +128,138 @@ export default function SMARTPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <RefreshCw className="w-12 h-12 animate-spin text-[#4F9CF9]" />
+      <div className="min-h-screen bg-[#F8F9FF] py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div className="space-y-2">
+              <Skeleton className="h-9 w-48" />
+              <Skeleton className="h-5 w-72" />
+            </div>
+            <Skeleton className="h-10 w-32" />
+          </div>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <Skeleton className="h-6 w-32" />
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <Skeleton className="h-6 w-64" />
+              <Skeleton className="h-4 w-80 mt-2" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex gap-4">
+                    <Skeleton className="flex-shrink-0 w-8 h-8 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-5 w-48" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <Skeleton className="h-6 w-72" />
+              <Skeleton className="h-4 w-64 mt-2" />
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-[#1E3A5F]">
+                    <TableHead className="text-white"><Skeleton className="h-4 w-10" /></TableHead>
+                    <TableHead className="text-white"><Skeleton className="h-4 w-24" /></TableHead>
+                    <TableHead className="text-white text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableHead>
+                    <TableHead className="text-white text-right"><Skeleton className="h-4 w-12 ml-auto" /></TableHead>
+                    <TableHead className="text-white text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableHead>
+                    <TableHead className="text-white text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableHead>
+                    <TableHead className="text-white text-right"><Skeleton className="h-4 w-12 ml-auto" /></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[1, 2, 3].map((i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-4 w-10" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-28 ml-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-12 ml-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-12 ml-auto" /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-4 w-56 mt-2" />
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-[#1E3A5F]">
+                    <TableHead className="text-white"><Skeleton className="h-4 w-16" /></TableHead>
+                    <TableHead className="text-white"><Skeleton className="h-4 w-32" /></TableHead>
+                    <TableHead className="text-white text-right"><Skeleton className="h-4 w-24 ml-auto" /></TableHead>
+                    <TableHead className="text-white text-center"><Skeleton className="h-4 w-20 mx-auto" /></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-4 w-12" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-16 mx-auto" /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-64" />
+              <Skeleton className="h-4 w-56 mt-2" />
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-[#1E3A5F]">
+                    <TableHead className="text-white"><Skeleton className="h-4 w-16" /></TableHead>
+                    <TableHead className="text-white"><Skeleton className="h-4 w-32" /></TableHead>
+                    <TableHead className="text-white text-right"><Skeleton className="h-4 w-24 ml-auto" /></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-6 w-12" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }
