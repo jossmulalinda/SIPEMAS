@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { BrainCircuit, RefreshCw, Trophy } from 'lucide-react'
+import { BrainCircuit, RefreshCw, Trophy, Smartphone, CheckCircle2 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
 interface SMARTResult {
@@ -15,8 +15,29 @@ interface SMARTResult {
   ranking: number
 }
 
+interface Smartphone {
+  id: number
+  kode: string
+  nama: string
+  harga: number
+  ram: number
+  storage: number
+  baterai: number
+  kamera: number
+}
+
+interface Kriteria {
+  id: number
+  kode: string
+  nama: string
+  bobot: number
+  sifat: string
+}
+
 export default function SMARTPage() {
   const [results, setResults] = useState<SMARTResult[]>([])
+  const [smartphones, setSmartphones] = useState<Smartphone[]>([])
+  const [kriteria, setKriteria] = useState<Kriteria[]>([])
   const [loading, setLoading] = useState(true)
   const [calculating, setCalculating] = useState(false)
 
@@ -37,8 +58,32 @@ export default function SMARTPage() {
     }
   }
 
+  const fetchSmartphones = async () => {
+    try {
+      const response = await fetch('/api/smartphone')
+      if (!response.ok) throw new Error('Failed to fetch')
+      const data = await response.json()
+      setSmartphones(data)
+    } catch (error) {
+      console.error('Failed to fetch smartphones:', error)
+    }
+  }
+
+  const fetchKriteria = async () => {
+    try {
+      const response = await fetch('/api/kriteria')
+      if (!response.ok) throw new Error('Failed to fetch')
+      const data = await response.json()
+      setKriteria(data)
+    } catch (error) {
+      console.error('Failed to fetch kriteria:', error)
+    }
+  }
+
   useEffect(() => {
     fetchResults()
+    fetchSmartphones()
+    fetchKriteria()
   }, [])
 
   const handleCalculate = async () => {
@@ -124,6 +169,152 @@ export default function SMARTPage() {
               <strong>Nilai Akhir:</strong> u(a<sub>i</sub>) = Σ (w<sub>j</sub> × u<sub>j</sub>(a<sub>i</sub>))
             </p>
             <p>Ranking berdasarkan nilai tertinggi</p>
+          </CardContent>
+        </Card>
+
+        {/* Tahapan SMART */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-[#4F9CF9]" />
+              Tahapan Perhitungan SMART
+            </CardTitle>
+            <CardDescription>
+              Langkah-langkah sistematis dalam menentukan ranking smartphone
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1E3A5F] text-white flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-[#1E3A5F]">Pengumpulan Data</h4>
+                  <p className="text-sm text-gray-600">
+                    Mengumpulkan data smartphone dan kriteria beserta bobotnya
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1E3A5F] text-white flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-[#1E3A5F]">Normalisasi Bobot Kriteria</h4>
+                  <p className="text-sm text-gray-600">
+                    Menormalisasi bobot kriteria agar jumlahnya sama dengan 1 (Σw = 1)
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1E3A5F] text-white flex items-center justify-center font-bold text-sm">
+                  3
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-[#1E3A5F]">Pengubahan ke Nilai Utility</h4>
+                  <p className="text-sm text-gray-600">
+                    Mengubah nilai kriteria ke skala utility (0-100) menggunakan fungsi utility linear
+                  </p>
+                  <ul className="text-xs text-gray-500 mt-1 ml-4 list-disc">
+                    <li>Cost: Semakin kecil nilai, semakin tinggi utility</li>
+                    <li>Benefit: Semakin besar nilai, semakin tinggi utility</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1E3A5F] text-white flex items-center justify-center font-bold text-sm">
+                  4
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-[#1E3A5F]">Perankingan</h4>
+                  <p className="text-sm text-gray-600">
+                    Menghitung nilai akhir dengan menjumlahkan utility ternormalisasi dan mengurutkan
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Data Smartphone */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Smartphone className="w-5 h-5 text-[#1E3A5F]" />
+              Data Smartphone yang Dinilai
+            </CardTitle>
+            <CardDescription>
+              Tabel alternatif smartphone yang akan dianalisis
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto max-h-96 overflow-y-auto">
+              <Table>
+                <TableHeader className="sticky top-0 bg-white">
+                  <TableRow className="bg-[#1E3A5F]">
+                    <TableHead className="text-white">Kode</TableHead>
+                    <TableHead className="text-white">Nama</TableHead>
+                    <TableHead className="text-white text-right">Harga</TableHead>
+                    <TableHead className="text-white text-right">RAM</TableHead>
+                    <TableHead className="text-white text-right">Storage</TableHead>
+                    <TableHead className="text-white text-right">Baterai</TableHead>
+                    <TableHead className="text-white text-right">Kamera</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {smartphones.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">{item.kode}</TableCell>
+                      <TableCell>{item.nama}</TableCell>
+                      <TableCell className="text-right">Rp {item.harga.toLocaleString('id-ID')}</TableCell>
+                      <TableCell className="text-right">{item.ram} GB</TableCell>
+                      <TableCell className="text-right">{item.storage} GB</TableCell>
+                      <TableCell className="text-right">{item.baterai} mAh</TableCell>
+                      <TableCell className="text-right">{item.kamera} MP</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Data Kriteria */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg">Data Kriteria dan Bobot</CardTitle>
+            <CardDescription>
+              Kriteria penilaian beserta bobot dan sifatnya
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-[#1E3A5F]">
+                    <TableHead className="text-white">Kode</TableHead>
+                    <TableHead className="text-white">Nama</TableHead>
+                    <TableHead className="text-white text-right">Bobot</TableHead>
+                    <TableHead className="text-white text-center">Sifat</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {kriteria.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">{item.kode}</TableCell>
+                      <TableCell>{item.nama}</TableCell>
+                      <TableCell className="text-right">{item.bobot.toFixed(2)}</TableCell>
+                      <TableCell className="text-center">
+                        <Badge variant={item.sifat === 'benefit' ? 'default' : 'outline'}>
+                          {item.sifat === 'benefit' ? 'Benefit' : 'Cost'}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
 
