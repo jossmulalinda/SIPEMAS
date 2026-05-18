@@ -48,9 +48,36 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id: idParam } = await params
     const id = parseInt(idParam)
+
+    // Get the deleted smartphone to know its position
+    const deletedSmartphone = await db.smartphone.findUnique({
+      where: { id },
+    })
+
+    if (!deletedSmartphone) {
+      return NextResponse.json({ error: 'Smartphone not found' }, { status: 404 })
+    }
+
+    // Delete the smartphone
     await db.smartphone.delete({
       where: { id },
     })
+
+    // Renumber all smartphones sequentially
+    const allSmartphones = await db.smartphone.findMany({
+      orderBy: { id: 'asc' },
+    })
+
+    // Update codes sequentially (A1, A2, A3, ...)
+    for (let i = 0; i < allSmartphones.length; i++) {
+      const newCode = `A${i + 1}`
+      if (allSmartphones[i].kode !== newCode) {
+        await db.smartphone.update({
+          where: { id: allSmartphones[i].id },
+          data: { kode: newCode },
+        })
+      }
+    }
 
     return NextResponse.json({ message: 'Smartphone deleted successfully' })
   } catch (error) {

@@ -17,24 +17,23 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { kode, nama, harga, ram, storage, baterai, kamera } = body
+    const { nama, harga, ram, storage, baterai, kamera } = body
 
-    if (!kode || !nama || !harga || !ram || !storage || !baterai || !kamera) {
+    if (!nama || !harga || !ram || !storage || !baterai || !kamera) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Check if kode already exists
-    const existingSmartphone = await db.smartphone.findUnique({
-      where: { kode },
+    // Get all smartphones to determine the next code
+    const allSmartphones = await db.smartphone.findMany({
+      orderBy: { id: 'asc' },
     })
 
-    if (existingSmartphone) {
-      return NextResponse.json({ error: 'Kode smartphone sudah ada' }, { status: 409 })
-    }
+    // Generate next sequential code (A1, A2, A3, ...)
+    const nextCode = `A${allSmartphones.length + 1}`
 
     const smartphone = await db.smartphone.create({
       data: {
-        kode,
+        kode: nextCode,
         nama,
         harga: parseFloat(harga),
         ram: parseFloat(ram),

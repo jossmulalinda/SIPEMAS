@@ -71,10 +71,17 @@ export default function KriteriaPage() {
       const url = editingItem ? `/api/kriteria/${editingItem.id}` : '/api/kriteria'
       const method = editingItem ? 'PUT' : 'POST'
 
+      // When editing, include kode; when adding, kode is auto-generated
+      const payload = editingItem ? formData : {
+        nama: formData.nama,
+        bobot: formData.bobot,
+        sifat: formData.sifat,
+      }
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       })
 
       if (!response.ok) {
@@ -190,16 +197,18 @@ export default function KriteriaPage() {
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="kode">Kode</Label>
-                  <Input
-                    id="kode"
-                    value={formData.kode}
-                    onChange={(e) => setFormData({ ...formData, kode: e.target.value })}
-                    placeholder="Contoh: C1"
-                    required
-                  />
-                </div>
+                {editingItem && (
+                  <div className="space-y-2">
+                    <Label htmlFor="kode">Kode</Label>
+                    <Input
+                      id="kode"
+                      value={formData.kode}
+                      disabled
+                      className="bg-gray-100"
+                    />
+                    <p className="text-xs text-gray-500">Kode otomatis diatur oleh sistem</p>
+                  </div>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="nama">Nama Kriteria</Label>
                   <Input

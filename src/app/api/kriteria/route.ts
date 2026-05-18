@@ -17,24 +17,23 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { kode, nama, bobot, sifat } = body
+    const { nama, bobot, sifat } = body
 
-    if (!kode || !nama || !bobot || !sifat) {
+    if (!nama || !bobot || !sifat) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Check if kode already exists
-    const existingKriteria = await db.kriteria.findUnique({
-      where: { kode },
+    // Get all kriteria to determine the next code
+    const allKriteria = await db.kriteria.findMany({
+      orderBy: { id: 'asc' },
     })
 
-    if (existingKriteria) {
-      return NextResponse.json({ error: 'Kode kriteria sudah ada' }, { status: 409 })
-    }
+    // Generate next sequential code (C1, C2, C3, ...)
+    const nextCode = `C${allKriteria.length + 1}`
 
     const kriteriaItem = await db.kriteria.create({
       data: {
-        kode,
+        kode: nextCode,
         nama,
         bobot: parseFloat(bobot),
         sifat,

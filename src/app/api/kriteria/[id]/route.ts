@@ -45,9 +45,36 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id: idParam } = await params
     const id = parseInt(idParam)
+
+    // Get the deleted kriteria to know its position
+    const deletedKriteria = await db.kriteria.findUnique({
+      where: { id },
+    })
+
+    if (!deletedKriteria) {
+      return NextResponse.json({ error: 'Kriteria not found' }, { status: 404 })
+    }
+
+    // Delete the kriteria
     await db.kriteria.delete({
       where: { id },
     })
+
+    // Renumber all kriteria sequentially
+    const allKriteria = await db.kriteria.findMany({
+      orderBy: { id: 'asc' },
+    })
+
+    // Update codes sequentially (C1, C2, C3, ...)
+    for (let i = 0; i < allKriteria.length; i++) {
+      const newCode = `C${i + 1}`
+      if (allKriteria[i].kode !== newCode) {
+        await db.kriteria.update({
+          where: { id: allKriteria[i].id },
+          data: { kode: newCode },
+        })
+      }
+    }
 
     return NextResponse.json({ message: 'Kriteria deleted successfully' })
   } catch (error) {
