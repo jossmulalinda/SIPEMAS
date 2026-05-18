@@ -501,15 +501,6 @@ export default function AlternatifPage() {
               <Upload className="w-4 h-4" />
               Import Excel
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleDeleteAll}
-              disabled={smartphones.length === 0}
-              className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
-            >
-              <Trash2 className="w-4 h-4" />
-              Hapus Semua
-            </Button>
             <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
               <DialogTrigger asChild>
                 <Button onClick={resetForm} className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
@@ -621,8 +612,21 @@ export default function AlternatifPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Daftar Smartphone</CardTitle>
-            <CardDescription>Total {smartphones.length} smartphone tersedia</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Daftar Smartphone</CardTitle>
+                <CardDescription>Total {smartphones.length} smartphone tersedia</CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleDeleteAll}
+                disabled={smartphones.length === 0}
+                className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+              >
+                <Trash2 className="w-4 h-4" />
+                Hapus Semua
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
