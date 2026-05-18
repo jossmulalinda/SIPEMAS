@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X, CheckCircle2, XCircle, AlertTriangle, Timer } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import * as XLSX from 'xlsx'
@@ -538,8 +539,69 @@ export default function AlternatifPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <RefreshCw className="w-12 h-12 animate-spin text-[#4F9CF9]" />
+      <div className="min-h-screen bg-[#F8F9FF] py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div className="space-y-2">
+              <Skeleton className="h-9 w-64" />
+              <Skeleton className="h-5 w-48" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-10 w-32" />
+            </div>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className="h-4 w-40" />
+                </div>
+                <Skeleton className="h-10 w-28" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-[#1E3A5F]">
+                      <TableHead className="text-white"><Skeleton className="h-4 w-12" /></TableHead>
+                      <TableHead className="text-white"><Skeleton className="h-4 w-24" /></TableHead>
+                      <TableHead className="text-white"><Skeleton className="h-4 w-20" /></TableHead>
+                      <TableHead className="text-white"><Skeleton className="h-4 w-12" /></TableHead>
+                      <TableHead className="text-white"><Skeleton className="h-4 w-16" /></TableHead>
+                      <TableHead className="text-white"><Skeleton className="h-4 w-16" /></TableHead>
+                      <TableHead className="text-white"><Skeleton className="h-4 w-12" /></TableHead>
+                      <TableHead className="text-white text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <TableRow key={i}>
+                        <TableCell><Skeleton className="h-4 w-10" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-28" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Skeleton className="h-8 w-8" />
+                            <Skeleton className="h-8 w-8" />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }
