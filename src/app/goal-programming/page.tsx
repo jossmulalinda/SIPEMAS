@@ -168,8 +168,8 @@ export default function GoalProgrammingPage() {
               <strong>Deviasi (Gap):</strong>
             </p>
             <ul className="list-disc list-inside ml-4 space-y-1">
-              <li>Cost (Harga): d<sup>+</sup> = (nilai - target) / 1000 (jika nilai > target)</li>
-              <li>Benefit (lainnya): d<sup>-</sup> = (target - nilai) / 100 (jika target > nilai)</li>
+              <li>Cost (Harga): d<sup>+</sup> = (nilai - target) / 1000 (jika nilai &gt; target)</li>
+              <li>Benefit (lainnya): d<sup>-</sup> = (target - nilai) / 100 (jika target &gt; nilai)</li>
             </ul>
             <p className="pt-2">
               <strong>Fungsi Tujuan:</strong> Z = (Jarak × 0.5) + (Waktu × 0.3) + (Biaya × 0.2)
