@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X } from 'lucide-react'
+import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import * as XLSX from 'xlsx'
 
@@ -51,6 +51,7 @@ export default function AlternatifPage() {
         title: 'Error',
         description: 'Gagal memuat data smartphone',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setLoading(false)
@@ -76,6 +77,7 @@ export default function AlternatifPage() {
         title: 'Validasi Gagal',
         description: 'Harga harus berupa angka positif',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -85,6 +87,7 @@ export default function AlternatifPage() {
         title: 'Validasi Gagal',
         description: 'RAM harus berupa angka positif',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -94,6 +97,7 @@ export default function AlternatifPage() {
         title: 'Validasi Gagal',
         description: 'Storage harus berupa angka positif',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -103,6 +107,7 @@ export default function AlternatifPage() {
         title: 'Validasi Gagal',
         description: 'Baterai harus berupa angka positif',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -112,6 +117,7 @@ export default function AlternatifPage() {
         title: 'Validasi Gagal',
         description: 'Kamera harus berupa angka positif',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -143,6 +149,7 @@ export default function AlternatifPage() {
             title: 'Validasi Gagal',
             description: errorData.error || 'Kode smartphone sudah ada',
             variant: 'destructive',
+            icon: <XCircle className="h-5 w-5" />,
           })
           return
         }
@@ -152,6 +159,8 @@ export default function AlternatifPage() {
       toast({
         title: 'Sukses',
         description: editingItem ? 'Smartphone berhasil diperbarui' : 'Smartphone berhasil ditambahkan',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       setDialogOpen(false)
@@ -162,6 +171,7 @@ export default function AlternatifPage() {
         title: 'Error',
         description: 'Gagal menyimpan data',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     }
   }
@@ -190,6 +200,8 @@ export default function AlternatifPage() {
       toast({
         title: 'Sukses',
         description: 'Smartphone berhasil dihapus',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       fetchSmartphones()
@@ -198,6 +210,7 @@ export default function AlternatifPage() {
         title: 'Error',
         description: 'Gagal menghapus smartphone',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     }
   }
@@ -266,12 +279,15 @@ export default function AlternatifPage() {
       toast({
         title: 'Berhasil',
         description: 'Data smartphone berhasil diekspor ke Excel',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Gagal mengekspor data ke Excel',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     }
   }
@@ -295,6 +311,7 @@ export default function AlternatifPage() {
         title: 'Error',
         description: 'File harus berupa Excel (.xlsx atau .xls)',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -317,6 +334,7 @@ export default function AlternatifPage() {
           title: 'Error',
           description: 'File Excel tidak berisi data',
           variant: 'destructive',
+          icon: <XCircle className="h-5 w-5" />,
         })
         setImporting(false)
         return
@@ -385,6 +403,7 @@ export default function AlternatifPage() {
           title: 'Validasi Gagal',
           description: `${errors.length} baris tidak valid. ${errors.slice(0, 3).join('. ')}`,
           variant: 'destructive',
+          icon: <XCircle className="h-5 w-5" />,
         })
       }
 
@@ -410,6 +429,8 @@ export default function AlternatifPage() {
       toast({
         title: 'Berhasil',
         description: `${result.imported} smartphone berhasil ditambahkan${result.skipped > 0 ? `, ${result.skipped} duplikat dilewati` : ''}`,
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       setImportDialogOpen(false)
@@ -419,6 +440,7 @@ export default function AlternatifPage() {
         title: 'Error',
         description: error.message || 'Gagal mengimpor data dari Excel',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setImporting(false)

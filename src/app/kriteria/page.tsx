@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Pencil, Trash2, RefreshCw } from 'lucide-react'
+import { Plus, Pencil, Trash2, RefreshCw, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
 interface Kriteria {
@@ -43,6 +43,7 @@ export default function KriteriaPage() {
         title: 'Error',
         description: 'Gagal memuat data kriteria',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setLoading(false)
@@ -63,6 +64,7 @@ export default function KriteriaPage() {
         title: 'Validasi Gagal',
         description: 'Bobot harus berupa angka antara 0 dan 1',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -91,6 +93,7 @@ export default function KriteriaPage() {
             title: 'Validasi Gagal',
             description: errorData.error || 'Kode kriteria sudah ada',
             variant: 'destructive',
+            icon: <XCircle className="h-5 w-5" />,
           })
           return
         }
@@ -100,6 +103,8 @@ export default function KriteriaPage() {
       toast({
         title: 'Sukses',
         description: editingItem ? 'Kriteria berhasil diperbarui' : 'Kriteria berhasil ditambahkan',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       setDialogOpen(false)
@@ -110,6 +115,7 @@ export default function KriteriaPage() {
         title: 'Error',
         description: 'Gagal menyimpan data',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     }
   }
@@ -135,6 +141,8 @@ export default function KriteriaPage() {
       toast({
         title: 'Sukses',
         description: 'Kriteria berhasil dihapus',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       fetchKriteria()
@@ -143,6 +151,7 @@ export default function KriteriaPage() {
         title: 'Error',
         description: 'Gagal menghapus kriteria',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     }
   }

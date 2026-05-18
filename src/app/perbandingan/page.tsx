@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { RefreshCw, TrendingUp, Award } from 'lucide-react'
+import { RefreshCw, TrendingUp, Award, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
 interface ComparisonData {
@@ -40,6 +40,7 @@ export default function PerbandinganPage() {
         title: 'Error',
         description: 'Gagal memuat data perbandingan',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setLoading(false)
@@ -53,6 +54,8 @@ export default function PerbandinganPage() {
     toast({
       title: 'Berhasil',
       description: 'Data perbandingan berhasil diperbarui',
+      className: 'bg-green-500 text-white border-green-500',
+      icon: <CheckCircle2 className="h-5 w-5" />,
     })
   }
 

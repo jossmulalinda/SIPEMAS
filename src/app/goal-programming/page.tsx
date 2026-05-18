@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Trophy, RefreshCw, Award, Smartphone, CheckCircle2, Target } from 'lucide-react'
+import { Trophy, RefreshCw, Award, Smartphone, CheckCircle2, Target, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
 interface GPResult {
@@ -56,6 +56,7 @@ export default function GoalProgrammingPage() {
         title: 'Error',
         description: 'Gagal memuat hasil perhitungan',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setLoading(false)
@@ -101,6 +102,8 @@ export default function GoalProgrammingPage() {
       toast({
         title: 'Sukses',
         description: 'Perhitungan Goal Programming berhasil dilakukan',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       fetchResults()
@@ -109,6 +112,7 @@ export default function GoalProgrammingPage() {
         title: 'Error',
         description: 'Gagal melakukan perhitungan',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setCalculating(false)

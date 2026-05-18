@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { BrainCircuit, RefreshCw, Trophy, Smartphone, CheckCircle2 } from 'lucide-react'
+import { BrainCircuit, RefreshCw, Trophy, Smartphone, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
 interface SMARTResult {
@@ -52,6 +52,7 @@ export default function SMARTPage() {
         title: 'Error',
         description: 'Gagal memuat hasil perhitungan',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setLoading(false)
@@ -95,6 +96,8 @@ export default function SMARTPage() {
       toast({
         title: 'Sukses',
         description: 'Perhitungan SMART berhasil dilakukan',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       fetchResults()
@@ -103,6 +106,7 @@ export default function SMARTPage() {
         title: 'Error',
         description: 'Gagal melakukan perhitungan',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setCalculating(false)

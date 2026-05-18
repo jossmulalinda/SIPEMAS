@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { RefreshCw, Save } from 'lucide-react'
+import { RefreshCw, Save, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 
@@ -37,6 +37,7 @@ export default function BobotPage() {
         title: 'Error',
         description: 'Gagal memuat data bobot',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setLoading(false)
@@ -58,6 +59,7 @@ export default function BobotPage() {
           title: 'Validasi Gagal',
           description: `${kriteria[i].kode}: Bobot harus berupa angka antara 0 dan 1`,
           variant: 'destructive',
+          icon: <XCircle className="h-5 w-5" />,
         })
         return
       }
@@ -71,6 +73,7 @@ export default function BobotPage() {
         title: 'Validasi Gagal',
         description: `Total bobot harus 1.00, saat ini: ${total.toFixed(2)}`,
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
       return
     }
@@ -93,6 +96,8 @@ export default function BobotPage() {
       toast({
         title: 'Sukses',
         description: 'Bobot berhasil diperbarui',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
       })
 
       fetchKriteria()
@@ -101,6 +106,7 @@ export default function BobotPage() {
         title: 'Error',
         description: 'Gagal menyimpan bobot',
         variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
       })
     } finally {
       setSaving(false)
