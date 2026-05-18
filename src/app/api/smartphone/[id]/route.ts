@@ -12,6 +12,18 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Check if kode already exists (excluding current record)
+    const existingSmartphone = await db.smartphone.findFirst({
+      where: {
+        kode,
+        id: { not: id },
+      },
+    })
+
+    if (existingSmartphone) {
+      return NextResponse.json({ error: 'Kode smartphone sudah ada' }, { status: 409 })
+    }
+
     const smartphone = await db.smartphone.update({
       where: { id },
       data: {

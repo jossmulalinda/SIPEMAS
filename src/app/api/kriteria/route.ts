@@ -22,6 +22,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Check if kode already exists
+    const existingKriteria = await db.kriteria.findUnique({
+      where: { kode },
+    })
+
+    if (existingKriteria) {
+      return NextResponse.json({ error: 'Kode kriteria sudah ada' }, { status: 409 })
+    }
+
     const kriteriaItem = await db.kriteria.create({
       data: {
         kode,

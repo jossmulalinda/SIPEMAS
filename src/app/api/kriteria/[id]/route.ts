@@ -12,6 +12,18 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Check if kode already exists (excluding current record)
+    const existingKriteria = await db.kriteria.findFirst({
+      where: {
+        kode,
+        id: { not: id },
+      },
+    })
+
+    if (existingKriteria) {
+      return NextResponse.json({ error: 'Kode kriteria sudah ada' }, { status: 409 })
+    }
+
     const kriteriaItem = await db.kriteria.update({
       where: { id },
       data: {

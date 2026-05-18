@@ -22,6 +22,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Check if kode already exists
+    const existingSmartphone = await db.smartphone.findUnique({
+      where: { kode },
+    })
+
+    if (existingSmartphone) {
+      return NextResponse.json({ error: 'Kode smartphone sudah ada' }, { status: 409 })
+    }
+
     const smartphone = await db.smartphone.create({
       data: {
         kode,

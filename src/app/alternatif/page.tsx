@@ -122,7 +122,18 @@ export default function AlternatifPage() {
         body: JSON.stringify(formData),
       })
 
-      if (!response.ok) throw new Error('Failed to save')
+      if (!response.ok) {
+        const errorData = await response.json()
+        if (response.status === 409) {
+          toast({
+            title: 'Validasi Gagal',
+            description: errorData.error || 'Kode smartphone sudah ada',
+            variant: 'destructive',
+          })
+          return
+        }
+        throw new Error('Failed to save')
+      }
 
       toast({
         title: 'Sukses',
