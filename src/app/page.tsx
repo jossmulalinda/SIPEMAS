@@ -115,13 +115,13 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white hover:text-[#1E3A5F]">
                     Mulai Sekarang
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
                 <Link href="/perbandingan">
-                  <Button size="lg" variant="outline" className="border-white text-white px-8">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#1E3A5F]">
                     Lihat Perbandingan
                   </Button>
                 </Link>
@@ -130,13 +130,13 @@ export default function DashboardPage() {
             <div className="flex-1 flex justify-center">
               <div className="relative">
                 <div className="absolute inset-0 bg-[#4F9CF9] rounded-full blur-3xl opacity-30"></div>
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-8 border border-white/20 w-72 h-72 flex items-center justify-center">
-                  <div className="w-40 h-40 relative">
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-full w-64 h-64 flex items-center justify-center border border-white/20">
+                  <div className="w-40 h-40 relative rounded-full overflow-hidden">
                     <Image
                       src="/logo.png"
                       alt="SIPEMAS"
                       fill
-                      className="object-contain"
+                      className="object-cover"
                     />
                   </div>
                 </div>
@@ -285,12 +285,12 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white hover:text-[#1E3A5F]">
                     Kelola Alternatif
                   </Button>
                 </Link>
                 <Link href="/kriteria">
-                  <Button size="lg" variant="outline" className="border-white text-white px-8">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#1E3A5F]">
                     Atur Kriteria
                   </Button>
                 </Link>
