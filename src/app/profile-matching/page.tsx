@@ -163,9 +163,9 @@ export default function ProfileMatchingPage() {
               <strong>Konversi Gap:</strong>
             </p>
             <ul className="list-disc list-inside ml-4 space-y-1">
-              <li>GAP > 0: Nilai = 5</li>
+              <li>GAP &gt; 0: Nilai = 5</li>
               <li>GAP = 0: Nilai = 5</li>
-              <li>GAP < 0: Nilai = 3 + (GAP × 1)</li>
+              <li>GAP &lt; 0: Nilai = 3 + (GAP × 1)</li>
             </ul>
             <p className="pt-2">
               <strong>Core Factor (CF - 60%):</strong> Harga, RAM
