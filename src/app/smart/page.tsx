@@ -44,7 +44,9 @@ export default function SMARTPage() {
 
   const fetchResults = async () => {
     try {
-      const response = await fetch('/api/smart')
+      const response = await fetch('/api/smart', {
+        cache: 'no-store',
+      })
       if (!response.ok) throw new Error('Failed to fetch')
       const data = await response.json()
       setResults(data)
@@ -62,7 +64,9 @@ export default function SMARTPage() {
 
   const fetchSmartphones = async () => {
     try {
-      const response = await fetch('/api/smartphone')
+      const response = await fetch('/api/smartphone', {
+        cache: 'no-store',
+      })
       if (!response.ok) throw new Error('Failed to fetch')
       const data = await response.json()
       setSmartphones(data)
@@ -73,7 +77,9 @@ export default function SMARTPage() {
 
   const fetchKriteria = async () => {
     try {
-      const response = await fetch('/api/kriteria')
+      const response = await fetch('/api/kriteria', {
+        cache: 'no-store',
+      })
       if (!response.ok) throw new Error('Failed to fetch')
       const data = await response.json()
       setKriteria(data)

@@ -3,17 +3,20 @@ import { db } from '@/lib/db'
 
 export async function GET() {
   try {
-    // Get all results
+    // Get all smartphones first (from database, not hardcoded)
+    const smartphones = await db.smartphone.findMany({
+      orderBy: { id: 'asc' }
+    })
+
+    // Get all results from database
     const sawResults = await db.hasilSAW.findMany({ orderBy: { ranking: 'asc' } })
     const smartResults = await db.hasilSMART.findMany({ orderBy: { ranking: 'asc' } })
     const pmResults = await db.hasilPM.findMany({ orderBy: { ranking: 'asc' } })
     const gpResults = await db.hasilGP.findMany({ orderBy: { ranking: 'asc' } })
 
-    // Create comparison table
-    const smartphones = await db.smartphone.findMany()
-
+    // Create comparison table using actual smartphone names from database
     const comparison = smartphones.map((phone) => ({
-      smartphone: phone.nama,
+      smartphone: phone.nama, // Only use nama, not kode
       saw: sawResults.find((r) => r.smartphone === phone.nama) || { nilai: 0, ranking: 0 },
       smart: smartResults.find((r) => r.smartphone === phone.nama) || { nilai: 0, ranking: 0 },
       pm: pmResults.find((r) => r.smartphone === phone.nama) || { nilai: 0, ranking: 0 },
@@ -47,20 +50,29 @@ export async function GET() {
     const finalRecommendation =
       mostConsistent.length > 0 ? mostConsistent[0][0] : avgRankings[0]?.smartphone || 'Tidak ada data'
 
-    return NextResponse.json({
-      comparison,
-      chartData: {
-        SAW: sawResults,
-        SMART: smartResults,
-        PM: pmResults,
-        GP: gpResults,
+    return NextResponse.json(
+      {
+        comparison,
+        chartData: {
+          SAW: sawResults,
+          SMART: smartResults,
+          PM: pmResults,
+          GP: gpResults,
+        },
+        analysis: {
+          mostConsistent: mostConsistent.slice(0, 5),
+          avgRankings: avgRankings.slice(0, 5),
+          finalRecommendation,
+        },
       },
-      analysis: {
-        mostConsistent: mostConsistent.slice(0, 5),
-        avgRankings: avgRankings.slice(0, 5),
-        finalRecommendation,
-      },
-    })
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    )
   } catch (error) {
     console.error('Error fetching perbandingan data:', error)
     return NextResponse.json({ error: 'Failed to fetch perbandingan data' }, { status: 500 })

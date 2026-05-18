@@ -32,7 +32,9 @@ export default function PerbandinganPage() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/perbandingan')
+      const response = await fetch('/api/perbandingan', {
+        cache: 'no-store', // Ensure no caching
+      })
       if (!response.ok) throw new Error('Failed to fetch')
       const result = await response.json()
       setData(result)
@@ -50,14 +52,31 @@ export default function PerbandinganPage() {
 
   const handleRefresh = async () => {
     setRefreshing(true)
-    await fetchData()
-    setRefreshing(false)
-    toast({
-      title: 'Berhasil',
-      description: 'Data perbandingan berhasil diperbarui',
-      className: 'bg-green-500 text-white border-green-500',
-      icon: <CheckCircle2 className="h-5 w-5" />,
-    })
+    // Force fresh data fetch with timestamp to prevent any caching
+    try {
+      const response = await fetch(`/api/perbandingan?t=${Date.now()}`, {
+        cache: 'no-store',
+      })
+      if (!response.ok) throw new Error('Failed to fetch')
+      const result = await response.json()
+      setData(result)
+
+      toast({
+        title: 'Berhasil',
+        description: 'Data perbandingan berhasil diperbarui',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Gagal memperbarui data perbandingan',
+        variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
+      })
+    } finally {
+      setRefreshing(false)
+    }
   }
 
   useEffect(() => {

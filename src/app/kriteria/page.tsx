@@ -35,7 +35,9 @@ export default function KriteriaPage() {
 
   const fetchKriteria = async () => {
     try {
-      const response = await fetch('/api/kriteria')
+      const response = await fetch('/api/kriteria', {
+        cache: 'no-store',
+      })
       if (!response.ok) throw new Error('Failed to fetch')
       const data = await response.json()
       setKriteria(data)

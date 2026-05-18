@@ -44,7 +44,13 @@ export async function GET() {
     const results = await db.hasilSAW.findMany({
       orderBy: { ranking: 'asc' },
     })
-    return NextResponse.json(results)
+    return NextResponse.json(results, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    })
   } catch (error) {
     console.error('Error fetching SAW results:', error)
     return NextResponse.json({ error: 'Failed to fetch SAW results' }, { status: 500 })

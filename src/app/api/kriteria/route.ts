@@ -7,7 +7,13 @@ export async function GET() {
     const kriteria = await db.kriteria.findMany()
     // Sort using natural sort algorithm (C1, C2, ..., C9, C10, C11)
     const sortedKriteria = sortByCode(kriteria)
-    return NextResponse.json(sortedKriteria)
+    return NextResponse.json(sortedKriteria, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    })
   } catch (error) {
     console.error('Error fetching kriteria:', error)
     return NextResponse.json({ error: 'Failed to fetch kriteria' }, { status: 500 })

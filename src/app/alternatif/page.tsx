@@ -48,7 +48,9 @@ export default function AlternatifPage() {
 
   const fetchSmartphones = async () => {
     try {
-      const response = await fetch('/api/smartphone')
+      const response = await fetch('/api/smartphone', {
+        cache: 'no-store',
+      })
       if (!response.ok) throw new Error('Failed to fetch')
       const data = await response.json()
       setSmartphones(data)

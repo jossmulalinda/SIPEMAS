@@ -7,7 +7,13 @@ export async function GET() {
     const smartphones = await db.smartphone.findMany()
     // Sort using natural sort algorithm (A1, A2, ..., A9, A10, A11)
     const sortedSmartphones = sortByCode(smartphones)
-    return NextResponse.json(sortedSmartphones)
+    return NextResponse.json(sortedSmartphones, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    })
   } catch (error) {
     console.error('Error fetching smartphones:', error)
     return NextResponse.json({ error: 'Failed to fetch smartphones' }, { status: 500 })

@@ -28,7 +28,9 @@ export default function BobotPage() {
 
   const fetchKriteria = async () => {
     try {
-      const response = await fetch('/api/bobot')
+      const response = await fetch('/api/bobot', {
+        cache: 'no-store',
+      })
       if (!response.ok) throw new Error('Failed to fetch')
       const data = await response.json()
       setKriteria(data)

@@ -45,7 +45,13 @@ export async function GET() {
     const results = await db.hasilPM.findMany({
       orderBy: { ranking: 'asc' },
     })
-    return NextResponse.json(results)
+    return NextResponse.json(results, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    })
   } catch (error) {
     console.error('Error fetching PM results:', error)
     return NextResponse.json({ error: 'Failed to fetch PM results' }, { status: 500 })
