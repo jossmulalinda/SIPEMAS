@@ -1,256 +1,312 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Smartphone, Calculator, Trophy, Activity, RefreshCw } from 'lucide-react'
-import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { toast } from '@/hooks/use-toast'
-
-interface DashboardData {
-  summary: {
-    totalSmartphone: number
-    totalKriteria: number
-    activeMethods: number
-  }
-  topRecommendations: {
-    SAW: any[]
-    SMART: any[]
-    PM: any[]
-    GP: any[]
-  }
-  chartData: {
-    SAW: any[]
-    SMART: any[]
-    PM: any[]
-    GP: any[]
-  }
-  analysis: {
-    mostRecommended: [string, number][]
-  }
-}
+import {
+  Smartphone,
+  FunctionSquare,
+  BrainCircuit,
+  Target,
+  Trophy,
+  ArrowRight,
+  CheckCircle2,
+  Zap,
+  ShieldCheck,
+  BarChart3,
+  Users,
+  TrendingUp
+} from 'lucide-react'
+import Link from 'next/link'
 
 export default function DashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('/api/dashboard')
-      if (!response.ok) throw new Error('Failed to fetch dashboard data')
-      const result = await response.json()
-      setData(result)
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Gagal memuat data dashboard',
-        variant: 'destructive',
-      })
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
+  const features = [
+    {
+      icon: <FunctionSquare className="w-8 h-8 text-[#4F9CF9]" />,
+      title: 'Metode SAW',
+      description: 'Simple Additive Weighting - Metode pembobotan sederhana dengan normalisasi data',
+      color: 'bg-[#4F9CF9]/10'
+    },
+    {
+      icon: <BrainCircuit className="w-8 h-8 text-[#1E3A5F]" />,
+      title: 'Metode SMART',
+      description: 'Simple Multi-Attribute Rating Technique - Penilaian multi-atribut dengan fungsi utility',
+      color: 'bg-[#1E3A5F]/10'
+    },
+    {
+      icon: <Target className="w-8 h-8 text-[#28A745]" />,
+      title: 'Profile Matching',
+      description: 'Metode pencocokan profil dengan analisis GAP faktor core dan secondary',
+      color: 'bg-[#28A745]/10'
+    },
+    {
+      icon: <Trophy className="w-8 h-8 text-[#FFC107]" />,
+      title: 'Goal Programming',
+      description: 'Metode pemrograman tujuan untuk meminimalkasi deviasi dari target',
+      color: 'bg-[#FFC107]/10'
     }
-  }
+  ]
 
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  const handleRefresh = () => {
-    setRefreshing(true)
-    fetchData()
-  }
-
-  // Calculate all methods to get fresh data
-  const calculateAllMethods = async () => {
-    setRefreshing(true)
-    try {
-      await Promise.all([
-        fetch('/api/saw', { method: 'POST' }),
-        fetch('/api/smart', { method: 'POST' }),
-        fetch('/api/profile-matching', { method: 'POST' }),
-        fetch('/api/goal-programming', { method: 'POST' }),
-      ])
-      await fetchData()
-      toast({
-        title: 'Sukses',
-        description: 'Semua metode berhasil dihitung ulang',
-      })
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Gagal menghitung ulang',
-        variant: 'destructive',
-      })
-    } finally {
-      setRefreshing(false)
+  const benefits = [
+    {
+      icon: <Zap className="w-6 h-6 text-[#4F9CF9]" />,
+      title: 'Cepat & Efisien',
+      description: 'Perhitungan otomatis yang cepat dan akurat'
+    },
+    {
+      icon: <ShieldCheck className="w-6 h-6 text-[#1E3A5F]" />,
+      title: 'Validasi Ketat',
+      description: 'Memastikan data input yang valid dan konsisten'
+    },
+    {
+      icon: <BarChart3 className="w-6 h-6 text-[#28A745]" />,
+      title: 'Visualisasi Data',
+      description: 'Grafik dan chart untuk memudahkan pemahaman hasil'
+    },
+    {
+      icon: <Users className="w-6 h-6 text-[#FFC107]" />,
+      title: 'User Friendly',
+      description: 'Antarmuka yang mudah digunakan oleh siapa saja'
     }
-  }
+  ]
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <RefreshCw className="w-12 h-12 animate-spin mx-auto mb-4 text-[#4F9CF9]" />
-          <p className="text-gray-600">Memuat data...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Prepare chart data
-  const chartData = data?.chartData.SAW.map((item) => ({
-    smartphone: item.smartphone.substring(0, 15),
-    SAW: data.chartData.SAW.find((s) => s.smartphone === item.smartphone)?.nilai || 0,
-    SMART: data.chartData.SMART.find((s) => s.smartphone === item.smartphone)?.nilai || 0,
-    PM: data.chartData.PM.find((s) => s.smartphone === item.smartphone)?.nilai || 0,
-    GP: 1 - (data.chartData.GP.find((s) => s.smartphone === item.smartphone)?.nilaiZ || 0), // Invert GP for comparison
-  })) || []
+  const steps = [
+    {
+      step: '1',
+      title: 'Input Data Alternatif',
+      description: 'Masukkan data smartphone yang ingin dinilai beserta spesifikasinya'
+    },
+    {
+      step: '2',
+      title: 'Tentukan Kriteria & Bobot',
+      description: 'Atur kriteria penilaian dan berikan bobot sesuai prioritas'
+    },
+    {
+      step: '3',
+      title: 'Pilih Metode Perhitungan',
+      description: 'Pilih salah satu atau gunakan semua metode untuk perbandingan'
+    },
+    {
+      step: '4',
+      title: 'Analisis Hasil',
+      description: 'Lihat peringkat dan analisis konsistensi antar metode'
+    }
+  ]
 
   return (
-    <div className="min-h-screen bg-[#F8F9FF] py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-[#1E3A5F]">Dashboard</h1>
-              <p className="text-gray-600 mt-1">Sistem Pendukung Keputusan Pemilihan Smartphone</p>
+    <div className="min-h-screen bg-[#F8F9FF]">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-[#1E3A5F] via-[#2d5a87] to-[#4F9CF9] text-white py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+                <TrendingUp className="w-5 h-5" />
+                <span className="text-sm font-medium">Sistem Pendukung Keputusan Modern</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                SIPEMAS
+              </h1>
+              <h2 className="text-xl sm:text-2xl font-light mb-4 text-blue-100">
+                Sistem Pendukung Keputusan Pemilihan Smartphone
+              </h2>
+              <p className="text-lg text-blue-100 mb-8 max-w-2xl">
+                Bantu memilih smartphone terbaik dengan metode analisis yang teruji dan terpercaya.
+                Dapatkan rekomendasi berbasis data yang akurat dan objektif.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Link href="/alternatif">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] hover:bg-blue-50 font-semibold px-8">
+                    Mulai Sekarang
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/perbandingan">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8">
+                    Lihat Perbandingan
+                  </Button>
+                </Link>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button onClick={handleRefresh} variant="outline" disabled={refreshing}>
-                <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-              <Button onClick={calculateAllMethods} disabled={refreshing} className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
-                <Activity className="w-4 h-4 mr-2" />
-                Hitung Semua
-              </Button>
+            <div className="flex-1 flex justify-center">
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#4F9CF9] rounded-3xl blur-3xl opacity-30"></div>
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
+                  <Smartphone className="w-48 h-48 text-white mx-auto" />
+                  <div className="mt-6 text-center">
+                    <p className="text-2xl font-bold">4 Metode</p>
+                    <p className="text-blue-100">Tersedia untuk Analisis</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-t-4 border-t-[#4F9CF9]">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Smartphone</CardTitle>
-              <Smartphone className="w-5 h-5 text-[#4F9CF9]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#1E3A5F]">{data?.summary.totalSmartphone || 0}</div>
-              <p className="text-xs text-gray-500 mt-1">Alternatif tersedia</p>
-            </CardContent>
-          </Card>
+      {/* Features Section */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#1E3A5F] mb-4">
+              Metode Analisis yang Tersedia
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              SIPEMAS menyediakan empat metode analisis yang berbeda untuk memberikan
+              perspektif yang komprehensif dalam pemilihan smartphone
+            </p>
+          </div>
 
-          <Card className="border-t-4 border-t-[#1E3A5F]">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Kriteria</CardTitle>
-              <Calculator className="w-5 h-5 text-[#1E3A5F]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#1E3A5F]">{data?.summary.totalKriteria || 0}</div>
-              <p className="text-xs text-gray-500 mt-1">Kriteria penilaian</p>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <Card key={index} className={`border-t-4 ${feature.color} hover:shadow-lg transition-shadow`}>
+                <CardHeader>
+                  <div className={`w-16 h-16 ${feature.color} rounded-2xl flex items-center justify-center mb-4`}>
+                    {feature.icon}
+                  </div>
+                  <CardTitle className="text-[#1E3A5F]">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
 
-          <Card className="border-t-4 border-t-[#28A745]">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Metode Aktif</CardTitle>
-              <Trophy className="w-5 h-5 text-[#28A745]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#1E3A5F]">{data?.summary.activeMethods || 0}</div>
-              <p className="text-xs text-gray-500 mt-1">SAW, SMART, PM, GP</p>
+      {/* How It Works Section */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#1E3A5F] mb-4">
+              Cara Menggunakan SIPEMAS
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Ikuti 4 langkah mudah untuk mendapatkan rekomendasi smartphone terbaik
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {steps.map((step, index) => (
+              <div key={index} className="relative">
+                <div className="bg-[#F8F9FF] rounded-2xl p-6 h-full">
+                  <div className="w-12 h-12 bg-[#4F9CF9] text-white rounded-full flex items-center justify-center font-bold text-xl mb-4">
+                    {step.step}
+                  </div>
+                  <h3 className="text-lg font-semibold text-[#1E3A5F] mb-2">{step.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{step.description}</p>
+                </div>
+                {index < steps.length - 1 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
+                    <ArrowRight className="w-6 h-6 text-[#4F9CF9]" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Benefits Section */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#1E3A5F] mb-6">
+                Mengapa Memilih SIPEMAS?
+              </h2>
+              <p className="text-gray-600 mb-8 leading-relaxed">
+                SIPEMAS dirancang untuk membantu pengambilan keputusan yang lebih baik
+                dengan menggunakan metode-metode analisis yang telah diakui di dunia akademis
+                dan praktis. Sistem ini memastikan keputusan yang diambil berdasarkan data
+                yang valid dan analisis yang sistematis.
+              </p>
+
+              <div className="space-y-4">
+                {benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-[#F8F9FF] rounded-xl flex items-center justify-center">
+                      {benefit.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-[#1E3A5F] mb-1">{benefit.title}</h3>
+                      <p className="text-gray-600 text-sm">{benefit.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="bg-gradient-to-br from-[#4F9CF9] to-[#1E3A5F] text-white border-0">
+                <CardContent className="p-6">
+                  <div className="text-4xl font-bold mb-2">4</div>
+                  <div className="text-blue-100 text-sm">Metode Analisis</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-[#1E3A5F] to-[#2d5a87] text-white border-0">
+                <CardContent className="p-6">
+                  <div className="text-4xl font-bold mb-2">100%</div>
+                  <div className="text-blue-100 text-sm">Objektif</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-[#28A745] to-[#1e7a34] text-white border-0">
+                <CardContent className="p-6">
+                  <div className="text-4xl font-bold mb-2">∞</div>
+                  <div className="text-green-100 text-sm">Data Tersimpan</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-br from-[#FFC107] to-[#e0a800] text-white border-0">
+                <CardContent className="p-6">
+                  <div className="text-4xl font-bold mb-2">24/7</div>
+                  <div className="text-yellow-100 text-sm">Selalu Tersedia</div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <Card className="bg-gradient-to-br from-[#1E3A5F] via-[#2d5a87] to-[#4F9CF9] text-white border-0">
+            <CardContent className="p-12 text-center">
+              <CheckCircle2 className="w-16 h-16 mx-auto mb-6 opacity-90" />
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                Siap Memilih Smartphone Terbaik?
+              </h2>
+              <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
+                Mulai analisis sekarang dan dapatkan rekomendasi smartphone yang sesuai
+                dengan kebutuhan dan budget Anda
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/alternatif">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] hover:bg-blue-50 font-semibold px-8">
+                    <Smartphone className="w-5 h-5 mr-2" />
+                    Kelola Alternatif
+                  </Button>
+                </Link>
+                <Link href="/kriteria">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8">
+                    Atur Kriteria
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
+      </div>
 
-        {/* Chart */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Perbandingan Nilai Akhir Semua Metode</CardTitle>
-            <CardDescription>Visualisasi perbandingan nilai dari keempat metode SPK</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="smartphone" angle={-45} textAnchor="end" height={100} />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="SAW" fill="#4F9CF9" name="SAW" />
-                  <Bar dataKey="SMART" fill="#1E3A5F" name="SMART" />
-                  <Bar dataKey="PM" fill="#28A745" name="Profile Matching" />
-                  <Bar dataKey="GP" fill="#FFC107" name="Goal Programming" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Top Recommendations */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-[#1E3A5F]">Top 3 Rekomendasi</CardTitle>
-              <CardDescription>Smartphone dengan nilai tertinggi</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {data?.topRecommendations.SAW.slice(0, 3).map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-[#F8F9FF] rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                          index === 0 ? 'bg-[#4F9CF9]' : index === 1 ? 'bg-[#1E3A5F]' : 'bg-[#28A745]'
-                        }`}
-                      >
-                        {index + 1}
-                      </div>
-                      <div>
-                        <p className="font-medium text-[#1E3A5F]">{item.smartphone}</p>
-                        <p className="text-sm text-gray-500">SAW: {item.nilai.toFixed(3)}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-[#1E3A5F]">Analisis Konsistensi</CardTitle>
-              <CardDescription>Smartphone paling sering direkomendasikan</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {data?.analysis.mostRecommended.slice(0, 5).map(([name, count], index) => (
-                  <div key={name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#4F9CF9] flex items-center justify-center text-white font-bold">
-                        {index + 1}
-                      </div>
-                      <span className="text-sm font-medium text-[#1E3A5F]">{name}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#4F9CF9]"
-                          style={{ width: `${(count / 4) * 100}%` }}
-                        />
-                      </div>
-                      <span className="text-sm font-bold text-[#4F9CF9]">{count}/4</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+      {/* Footer Info */}
+      <div className="py-8 px-4 sm:px-6 lg:px-8 border-t border-gray-200 bg-[#F8F9FF]">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-gray-600 font-medium mb-2">
+            Saya bangga jadi anak ibu dan bapak
+          </p>
+          <p className="text-sm text-gray-500">
+            © {new Date().getFullYear()} SIPEMAS - Sistem Pendukung Keputusan Pemilihan Smartphone
+          </p>
         </div>
       </div>
     </div>
