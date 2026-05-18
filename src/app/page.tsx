@@ -4,6 +4,10 @@ import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
+  FunctionSquare,
+  BrainCircuit,
+  Target,
+  Trophy,
   ArrowRight,
   CheckCircle2,
   Zap,
@@ -17,61 +21,25 @@ import Link from 'next/link'
 export default function DashboardPage() {
   const features = [
     {
-      icon: (
-        <div className="w-16 h-16 relative">
-          <Image
-            src="/logo.png"
-            alt="SIPEMAS"
-            fill
-            className="object-contain"
-          />
-        </div>
-      ),
+      icon: <FunctionSquare className="w-10 h-10 text-[#4F9CF9]" />,
       title: 'Metode SAW',
       description: 'Simple Additive Weighting - Metode pembobotan sederhana dengan normalisasi data',
       color: 'bg-[#4F9CF9]/10'
     },
     {
-      icon: (
-        <div className="w-16 h-16 relative">
-          <Image
-            src="/logo.png"
-            alt="SIPEMAS"
-            fill
-            className="object-contain"
-          />
-        </div>
-      ),
+      icon: <BrainCircuit className="w-10 h-10 text-[#1E3A5F]" />,
       title: 'Metode SMART',
       description: 'Simple Multi-Attribute Rating Technique - Penilaian multi-atribut dengan fungsi utility',
       color: 'bg-[#1E3A5F]/10'
     },
     {
-      icon: (
-        <div className="w-16 h-16 relative">
-          <Image
-            src="/logo.png"
-            alt="SIPEMAS"
-            fill
-            className="object-contain"
-          />
-        </div>
-      ),
+      icon: <Target className="w-10 h-10 text-[#28A745]" />,
       title: 'Profile Matching',
       description: 'Metode pencocokan profil dengan analisis GAP faktor core dan secondary',
       color: 'bg-[#28A745]/10'
     },
     {
-      icon: (
-        <div className="w-16 h-16 relative">
-          <Image
-            src="/logo.png"
-            alt="SIPEMAS"
-            fill
-            className="object-contain"
-          />
-        </div>
-      ),
+      icon: <Trophy className="w-10 h-10 text-[#FFC107]" />,
       title: 'Goal Programming',
       description: 'Metode pemrograman tujuan untuk meminimalkan deviasi dari target',
       color: 'bg-[#FFC107]/10'
@@ -161,19 +129,15 @@ export default function DashboardPage() {
             </div>
             <div className="flex-1 flex justify-center">
               <div className="relative">
-                <div className="absolute inset-0 bg-[#4F9CF9] rounded-3xl blur-3xl opacity-30"></div>
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-                  <div className="w-48 h-48 relative mx-auto">
+                <div className="absolute inset-0 bg-[#4F9CF9] rounded-full blur-3xl opacity-30"></div>
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-8 border border-white/20 w-72 h-72 flex items-center justify-center">
+                  <div className="w-40 h-40 relative">
                     <Image
                       src="/logo.png"
                       alt="SIPEMAS"
                       fill
                       className="object-contain"
                     />
-                  </div>
-                  <div className="mt-6 text-center">
-                    <p className="text-2xl font-bold">4 Metode</p>
-                    <p className="text-blue-100">Tersedia untuk Analisis</p>
                   </div>
                 </div>
               </div>
