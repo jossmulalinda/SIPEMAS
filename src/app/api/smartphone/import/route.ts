@@ -36,9 +36,10 @@ export async function POST(request: NextRequest) {
         continue
       }
 
-      // Create new smartphone
+      // Create new smartphone with temporary code
       await db.smartphone.create({
         data: {
+          kode: `TEMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           nama: nama.trim(),
           harga: parseFloat(harga),
           ram: parseFloat(ram),
