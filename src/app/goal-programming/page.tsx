@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Trophy, RefreshCw, Award, Smartphone, CheckCircle2, Target, XCircle } from 'lucide-react'
+import { Trophy, RefreshCw, Calculator, Smartphone, CheckCircle2, Target, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
 interface GPResult {
@@ -154,7 +154,7 @@ export default function GoalProgrammingPage() {
             disabled={calculating}
             className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90"
           >
-            <Award className="w-4 h-4 mr-2" />
+            <Calculator className="w-4 h-4 mr-2" />
             {calculating ? 'Menghitung...' : 'Hitung Ulang'}
           </Button>
         </div>

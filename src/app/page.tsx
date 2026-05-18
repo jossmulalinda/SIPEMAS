@@ -121,7 +121,7 @@ export default function DashboardPage() {
                   </Button>
                 </Link>
                 <Link href="/perbandingan">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:shadow-lg hover:scale-105 transition-all duration-200">
+                  <Button size="lg" variant="outline" className="border-2 border-white/30 text-white bg-transparent hover:border-[#4F9CF9] hover:bg-white/5 hover:shadow-lg hover:scale-105 transition-all duration-200">
                     Lihat Perbandingan
                   </Button>
                 </Link>
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                   </Button>
                 </Link>
                 <Link href="/kriteria">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:shadow-lg hover:scale-105 transition-all duration-200">
+                  <Button size="lg" variant="outline" className="border-2 border-white/30 text-white bg-transparent hover:border-[#4F9CF9] hover:bg-white/5 hover:shadow-lg hover:scale-105 transition-all duration-200">
                     Atur Kriteria
                   </Button>
                 </Link>

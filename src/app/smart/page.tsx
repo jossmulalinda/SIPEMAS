@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { BrainCircuit, RefreshCw, Trophy, Smartphone, CheckCircle2, XCircle } from 'lucide-react'
+import { Calculator, RefreshCw, Trophy, Smartphone, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 
 interface SMARTResult {
@@ -148,7 +148,7 @@ export default function SMARTPage() {
             disabled={calculating}
             className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90"
           >
-            <BrainCircuit className="w-4 h-4 mr-2" />
+            <Calculator className="w-4 h-4 mr-2" />
             {calculating ? 'Menghitung...' : 'Hitung Ulang'}
           </Button>
         </div>
