@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Smartphone {
+  id       Int    @id @default(autoincrement())
+  kode     String
+  nama     String
+  harga    Float
+  ram      Float
+  storage  Float
+  baterai  Float
+  kamera   Float
+}
+
+model Kriteria {
+  id     Int    @id @default(autoincrement())
+  kode   String
+  nama   String
+  bobot  Float
+  sifat  String // "benefit" or "cost"
+}
+
+model ProfilIdeal {
+  id      Int   @id @default(autoincrement())
+  harga   Float
+  ram     Float
+  storage Float
+  baterai Float
+  kamera  Float
+}
+
+model HasilSAW {
+  id          Int    @id @default(autoincrement())
+  smartphone  String
+  nilai       Float
+  ranking     Int
+}
+
+model HasilSMART {
+  id          Int    @id @default(autoincrement())
+  smartphone  String
+  nilai       Float
+  ranking     Int
+}
+
+model HasilPM {
+  id          Int    @id @default(autoincrement())
+  smartphone  String
+  nilai       Float
+  ranking     Int
+}
+
+model HasilGP {
+  id          Int    @id @default(autoincrement())
+  smartphone  String
+  jarak       Float
+  waktu       Float
+  biaya       Float
+  nilaiZ      Float
+  ranking     Int
+}
