@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X, CheckCircle2, XCircle } from 'lucide-react'
+import { Plus, Pencil, Trash2, RefreshCw, Download, Upload, FileSpreadsheet, X, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import * as XLSX from 'xlsx'
 
@@ -209,6 +209,31 @@ export default function AlternatifPage() {
       toast({
         title: 'Error',
         description: 'Gagal menghapus smartphone',
+        variant: 'destructive',
+        icon: <XCircle className="h-5 w-5" />,
+      })
+    }
+  }
+
+  const handleDeleteAll = async () => {
+    if (!confirm('Apakah Anda yakin ingin menghapus SEMUA data smartphone? Tindakan ini tidak dapat dibatalkan!')) return
+
+    try {
+      const response = await fetch('/api/smartphone', { method: 'DELETE' })
+      if (!response.ok) throw new Error('Failed to delete all')
+
+      toast({
+        title: 'Sukses',
+        description: 'Semua data smartphone berhasil dihapus',
+        className: 'bg-green-500 text-white border-green-500',
+        icon: <CheckCircle2 className="h-5 w-5" />,
+      })
+
+      fetchSmartphones()
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Gagal menghapus semua data smartphone',
         variant: 'destructive',
         icon: <XCircle className="h-5 w-5" />,
       })
@@ -467,7 +492,7 @@ export default function AlternatifPage() {
             <h1 className="text-3xl font-bold text-[#1E3A5F]">Alternatif Smartphone</h1>
             <p className="text-gray-600 mt-1">Kelola data smartphone yang akan dinilai</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button variant="outline" onClick={handleExport} className="gap-2">
               <Download className="w-4 h-4" />
               Export Excel
@@ -475,6 +500,15 @@ export default function AlternatifPage() {
             <Button variant="outline" onClick={() => setImportDialogOpen(true)} className="gap-2">
               <Upload className="w-4 h-4" />
               Import Excel
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleDeleteAll}
+              disabled={smartphones.length === 0}
+              className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+            >
+              <Trash2 className="w-4 h-4" />
+              Hapus Semua
             </Button>
             <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
               <DialogTrigger asChild>

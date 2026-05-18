@@ -49,3 +49,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create smartphone' }, { status: 500 })
   }
 }
+
+export async function DELETE() {
+  try {
+    // Delete all smartphones
+    await db.smartphone.deleteMany({})
+
+    return NextResponse.json({
+      message: 'Semua data smartphone berhasil dihapus'
+    })
+  } catch (error) {
+    console.error('Error deleting all smartphones:', error)
+    return NextResponse.json({ error: 'Failed to delete all smartphones' }, { status: 500 })
+  }
+}
