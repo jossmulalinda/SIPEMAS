@@ -55,9 +55,7 @@ export function Sidebar() {
         {/* Logo Section */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-[#2A4A75]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#4F9CF9] rounded-lg flex items-center justify-center font-bold text-white shrink-0">
-              SI
-            </div>
+            <img src="/logo.png" alt="SIPEMAS Logo" className="w-10 h-10 rounded-lg object-cover shrink-0" />
             <div>
               <span className="text-xl font-bold whitespace-nowrap block leading-tight">SIPEMAS</span>
               <span className="text-xs text-white/70 whitespace-nowrap block">Sistem Pendukung Keputusan</span>

@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   description: "Aplikasi Sistem Pendukung Keputusan untuk pemilihan smartphone menggunakan metode SAW, SMART, Profile Matching, dan Goal Programming",
   keywords: ["SIPEMAS", "Sistem Pendukung Keputusan", "Smartphone", "SAW", "SMART", "Profile Matching", "Goal Programming"],
   authors: [{ name: "SIPEMAS Team" }],
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
