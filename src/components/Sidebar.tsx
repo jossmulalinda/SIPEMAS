@@ -55,9 +55,12 @@ export function Sidebar() {
         <div className="flex items-center justify-between h-16 px-4 border-b border-[#2A4A75]">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-[#4F9CF9] rounded-lg flex items-center justify-center font-bold text-white shrink-0">
-              SPK
+              SI
             </div>
-            <span className="text-xl font-bold whitespace-nowrap">SPK Smartphone</span>
+            <div>
+              <span className="text-xl font-bold whitespace-nowrap block leading-tight">SIPEMAS</span>
+              <span className="text-xs text-white/70 whitespace-nowrap block">Sistem Pendukung Keputusan</span>
+            </div>
           </div>
           <Button
             variant="ghost"

@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SPK Smartphone - Sistem Pendukung Keputusan Pemilihan Smartphone",
+  title: "SIPEMAS - Sistem Pendukung Keputusan Pemilihan Smartphone",
   description: "Aplikasi Sistem Pendukung Keputusan untuk pemilihan smartphone menggunakan metode SAW, SMART, Profile Matching, dan Goal Programming",
-  keywords: ["SPK", "Smartphone", "SAW", "SMART", "Profile Matching", "Goal Programming"],
-  authors: [{ name: "SPK Team" }],
+  keywords: ["SIPEMAS", "Sistem Pendukung Keputusan", "Smartphone", "SAW", "SMART", "Profile Matching", "Goal Programming"],
+  authors: [{ name: "SIPEMAS Team" }],
 };
 
 export default function RootLayout({
