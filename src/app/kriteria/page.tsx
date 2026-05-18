@@ -56,6 +56,17 @@ export default function KriteriaPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Validate bobot
+    const bobot = parseFloat(formData.bobot)
+    if (isNaN(bobot) || bobot <= 0 || bobot > 1) {
+      toast({
+        title: 'Validasi Gagal',
+        description: 'Bobot harus berupa angka antara 0 dan 1',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
       const url = editingItem ? `/api/kriteria/${editingItem.id}` : '/api/kriteria'
       const method = editingItem ? 'PUT' : 'POST'
@@ -128,9 +139,13 @@ export default function KriteriaPage() {
     })
   }
 
-  const handleDialogClose = () => {
-    setDialogOpen(false)
-    resetForm()
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      setDialogOpen(false)
+      resetForm()
+    } else {
+      setDialogOpen(true)
+    }
   }
 
   if (loading) {
@@ -149,7 +164,7 @@ export default function KriteriaPage() {
             <h1 className="text-3xl font-bold text-[#1E3A5F]">Kriteria Penilaian</h1>
             <p className="text-gray-600 mt-1">Kelola kriteria yang digunakan untuk penilaian smartphone</p>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
             <DialogTrigger asChild>
               <Button onClick={resetForm} className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
                 <Plus className="w-4 h-4 mr-2" />
@@ -209,7 +224,7 @@ export default function KriteriaPage() {
                   </Select>
                 </div>
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="outline" onClick={handleDialogClose}>
+                  <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                     Batal
                   </Button>
                   <Button type="submit" className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">

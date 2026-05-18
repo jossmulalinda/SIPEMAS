@@ -50,6 +50,19 @@ export default function BobotPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Validate all bobot values
+    for (let i = 0; i < formData.length; i++) {
+      const bobot = parseFloat(formData[i].bobot)
+      if (isNaN(bobot) || bobot < 0 || bobot > 1) {
+        toast({
+          title: 'Validasi Gagal',
+          description: `${kriteria[i].kode}: Bobot harus berupa angka antara 0 dan 1`,
+          variant: 'destructive',
+        })
+        return
+      }
+    }
+
     // Calculate total
     const total = formData.reduce((sum, item) => sum + parseFloat(item.bobot || '0'), 0)
 

@@ -60,6 +60,58 @@ export default function AlternatifPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Validate numeric fields
+    const harga = parseFloat(formData.harga)
+    const ram = parseFloat(formData.ram)
+    const storage = parseFloat(formData.storage)
+    const baterai = parseFloat(formData.baterai)
+    const kamera = parseFloat(formData.kamera)
+
+    if (isNaN(harga) || harga <= 0) {
+      toast({
+        title: 'Validasi Gagal',
+        description: 'Harga harus berupa angka positif',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (isNaN(ram) || ram <= 0) {
+      toast({
+        title: 'Validasi Gagal',
+        description: 'RAM harus berupa angka positif',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (isNaN(storage) || storage <= 0) {
+      toast({
+        title: 'Validasi Gagal',
+        description: 'Storage harus berupa angka positif',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (isNaN(baterai) || baterai <= 0) {
+      toast({
+        title: 'Validasi Gagal',
+        description: 'Baterai harus berupa angka positif',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (isNaN(kamera) || kamera <= 0) {
+      toast({
+        title: 'Validasi Gagal',
+        description: 'Kamera harus berupa angka positif',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
       const url = editingItem ? `/api/smartphone/${editingItem.id}` : '/api/smartphone'
       const method = editingItem ? 'PUT' : 'POST'
@@ -138,9 +190,13 @@ export default function AlternatifPage() {
     })
   }
 
-  const handleDialogClose = () => {
-    setDialogOpen(false)
-    resetForm()
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      setDialogOpen(false)
+      resetForm()
+    } else {
+      setDialogOpen(true)
+    }
   }
 
   if (loading) {
@@ -159,7 +215,7 @@ export default function AlternatifPage() {
             <h1 className="text-3xl font-bold text-[#1E3A5F]">Alternatif Smartphone</h1>
             <p className="text-gray-600 mt-1">Kelola data smartphone yang akan dinilai</p>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
             <DialogTrigger asChild>
               <Button onClick={resetForm} className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
                 <Plus className="w-4 h-4 mr-2" />
@@ -253,7 +309,7 @@ export default function AlternatifPage() {
                   </div>
                 </div>
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="outline" onClick={handleDialogClose}>
+                  <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                     Batal
                   </Button>
                   <Button type="submit" className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90">
