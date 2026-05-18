@@ -115,13 +115,13 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:shadow-lg hover:scale-105 transition-all duration-200">
                     Mulai Sekarang
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
                 <Link href="/perbandingan">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:border-white">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:shadow-lg hover:scale-105 transition-all duration-200">
                     Lihat Perbandingan
                   </Button>
                 </Link>
@@ -285,12 +285,12 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:shadow-lg hover:scale-105 transition-all duration-200">
                     Kelola Alternatif
                   </Button>
                 </Link>
                 <Link href="/kriteria">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:border-white">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:shadow-lg hover:scale-105 transition-all duration-200">
                     Atur Kriteria
                   </Button>
                 </Link>
