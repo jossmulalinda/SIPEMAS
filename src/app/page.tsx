@@ -115,13 +115,13 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white hover:text-[#1E3A5F]">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white">
                     Mulai Sekarang
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
                 <Link href="/perbandingan">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#1E3A5F]">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:border-white">
                     Lihat Perbandingan
                   </Button>
                 </Link>
@@ -285,12 +285,12 @@ export default function DashboardPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/alternatif">
-                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white hover:text-[#1E3A5F]">
+                  <Button size="lg" className="bg-white text-[#1E3A5F] font-semibold px-8 hover:bg-white">
                     Kelola Alternatif
                   </Button>
                 </Link>
                 <Link href="/kriteria">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#1E3A5F]">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:border-white">
                     Atur Kriteria
                   </Button>
                 </Link>
