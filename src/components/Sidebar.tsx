@@ -32,7 +32,6 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -48,34 +47,18 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 z-50 h-screen bg-[#1E3A5F] text-white transition-all duration-300',
-          collapsed ? 'w-20' : 'w-64',
+          'fixed left-0 top-0 z-50 h-screen w-64 bg-[#1E3A5F] text-white transition-transform duration-300',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo Section */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-[#2A4A75]">
-          {!collapsed && (
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#4F9CF9] rounded-lg flex items-center justify-center font-bold text-white shrink-0">
-                SPK
-              </div>
-              <span className="text-xl font-bold whitespace-nowrap">SPK Smartphone</span>
-            </div>
-          )}
-          {collapsed && (
-            <div className="w-8 h-8 bg-[#4F9CF9] rounded-lg flex items-center justify-center font-bold text-white mx-auto">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-[#4F9CF9] rounded-lg flex items-center justify-center font-bold text-white shrink-0">
               SPK
             </div>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:flex text-white hover:bg-[#2A4A75] hover:text-white"
-          >
-            {collapsed ? <Menu size={20} /> : <X size={20} />}
-          </Button>
+            <span className="text-xl font-bold whitespace-nowrap">SPK Smartphone</span>
+          </div>
           <Button
             variant="ghost"
             size="icon"
@@ -100,12 +83,11 @@ export function Sidebar() {
                     'w-full justify-start gap-3 transition-colors',
                     isActive
                       ? 'bg-[#4F9CF9] text-white hover:bg-[#4F9CF9]/90'
-                      : 'text-white/70 hover:bg-[#2A4A75] hover:text-white',
-                    collapsed && 'justify-center px-2'
+                      : 'text-white/70 hover:bg-[#2A4A75] hover:text-white'
                   )}
                 >
-                  <Icon className={cn('shrink-0', collapsed ? 'w-5 h-5' : 'w-5 h-5')} />
-                  {!collapsed && <span className="whitespace-nowrap">{item.label}</span>}
+                  <Icon className="w-5 h-5 shrink-0" />
+                  <span className="whitespace-nowrap">{item.label}</span>
                 </Button>
               </Link>
             )
@@ -113,13 +95,11 @@ export function Sidebar() {
         </nav>
 
         {/* Tagline */}
-        {!collapsed && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#2A4A75]">
-            <p className="text-xs italic text-[#4F9CF9] text-center">
-              Saya bangga jadi anak ibu dan bapak
-            </p>
-          </div>
-        )}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#2A4A75]">
+          <p className="text-xs italic text-[#4F9CF9] text-center">
+            Saya bangga jadi anak ibu dan bapak
+          </p>
+        </div>
       </aside>
 
       {/* Mobile Menu Button */}
